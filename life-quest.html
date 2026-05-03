@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ Life Quest</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg0:#0d1117;--bg1:#161b22;--bg2:#21262d;
+  --gold:#ffd700;--gold2:#b8960c;
+  --emerald:#00d4aa;--purple:#a855f7;
+  --red:#ef4444;--blue:#3b82f6;--orange:#f97316;
+  --t1:#e6edf3;--t2:#8b949e;--border:#30363d
+}
+body{background:var(--bg0);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#12172a,#0d1117,#121e2a);
+  border-bottom:1px solid var(--border);padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  position:sticky;top:0;z-index:200;flex-wrap:wrap}
+.header::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 15% 50%,rgba(168,85,247,.05),transparent 50%),
+             radial-gradient(circle at 85% 50%,rgba(0,212,170,.05),transparent 50%)}
+.player-side{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0}
+.avatar{width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--emerald));
+  border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+.pinfo{min-width:0}
+.pname-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.pname{font-size:18px;font-weight:700;cursor:pointer;border-bottom:1px dashed transparent;transition:border-color .2s}
+.pname:hover{border-color:var(--gold)}
+.pname-input{font-size:18px;font-weight:700;background:transparent;border:none;
+  border-bottom:2px solid var(--gold);color:var(--t1);outline:none;max-width:150px}
+.lvbadge{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#000;
+  font-size:11px;font-weight:800;padding:3px 10px;border-radius:12px;white-space:nowrap;
+  cursor:pointer;transition:opacity .2s}
+.lvbadge:hover{opacity:.85}
+.xp-row{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:5px}
+.xp-row b{color:var(--purple)}
+.xpbg{width:200px;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.xpfill{height:100%;background:linear-gradient(90deg,var(--purple),var(--emerald));border-radius:3px;transition:width .5s ease}
+
+/* Main Quest Panel */
+.mq-panel{background:linear-gradient(135deg,rgba(168,85,247,.07),rgba(255,215,0,.07));
+  border:1px solid rgba(255,215,0,.28);border-radius:12px;
+  padding:11px 15px;min-width:240px;max-width:360px;flex-shrink:0;
+  box-shadow:0 0 24px rgba(255,215,0,.06)}
+.mq-label{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px}
+.mq-goals{max-height:110px;overflow-y:auto;display:flex;flex-direction:row;flex-wrap:wrap;gap:4px;align-content:flex-start;margin-bottom:6px}
+.mq-goals::-webkit-scrollbar{width:3px}.mq-goals::-webkit-scrollbar-thumb{background:rgba(255,215,0,.2);border-radius:2px}
+.mq-goal-item{display:inline-flex;align-items:center;gap:5px;padding:3px 7px 3px 5px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.12);transition:background .12s;max-width:190px}
+.mq-goal-item:hover{background:rgba(255,255,255,.1)}
+.mq-goal-circ{width:14px;height:14px;flex-shrink:0;border:1.5px solid rgba(255,215,0,.35);border-radius:50%;
+  flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-weight:900;transition:all .18s}
+.mq-goal-circ:hover{border-color:var(--gold)}
+.mq-goal-circ.done{background:var(--gold);border-color:var(--gold);color:#000}
+.mq-goal-text{flex:1;font-size:11.5px;color:var(--t1);line-height:1.3;min-width:0;max-width:130px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mq-goal-text.done{text-decoration:line-through;color:var(--t2);opacity:.6}
+.mq-goal-del{background:none;border:none;color:transparent;cursor:pointer;
+  font-size:12px;padding:0 2px;line-height:1;flex-shrink:0;transition:color .15s}
+.mq-goal-item:hover .mq-goal-del{color:rgba(255,255,255,.22)}
+.mq-goal-item:hover .mq-goal-del:hover{color:#f87171}
+.mq-add-row{display:flex;gap:5px;align-items:center}
+.mq-add-input{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.18);
+  border-radius:7px;color:var(--t1);font-size:12px;padding:5px 9px;outline:none;transition:border-color .2s}
+.mq-add-input:focus{border-color:rgba(255,215,0,.5)}
+.mq-add-input::placeholder{color:rgba(255,255,255,.25)}
+.mq-add-btn{background:rgba(255,215,0,.14);border:1px solid rgba(255,215,0,.22);border-radius:7px;
+  color:var(--gold);cursor:pointer;font-size:11px;font-weight:700;padding:5px 10px;
+  white-space:nowrap;transition:background .15s;flex-shrink:0}
+.mq-add-btn:hover{background:rgba(255,215,0,.26)}
+
+/* BODY */
+.body{display:flex;align-items:flex-start;flex:1}
+
+/* SIDEBAR */
+.sidebar{width:185px;flex-shrink:0;background:var(--bg1);border-right:1px solid var(--border);
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:18px 0;display:flex;flex-direction:column;gap:2px}
+.sidebar-ttl{font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:1px;padding:0 16px 10px}
+.navlink{display:flex;align-items:center;gap:10px;padding:11px 16px;color:var(--t2);cursor:pointer;
+  border:none;background:none;width:100%;text-align:left;font-size:13px;font-weight:500;
+  border-left:3px solid transparent;transition:all .2s}
+.navlink:hover{color:var(--t1);background:rgba(255,255,255,.025)}
+.navlink.on{color:var(--gold);border-left-color:var(--gold);background:rgba(255,215,0,.04)}
+.nav-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+
+/* CONTENT */
+.content{flex:1;padding:20px 24px 60px;min-width:0}
+
+/* BACK BUTTON */
+.back-btn{display:none;align-items:center;gap:8px;background:none;
+  border:1px solid var(--border);color:var(--t2);cursor:pointer;
+  font-size:13px;padding:7px 14px;border-radius:8px;margin-bottom:16px;transition:all .2s}
+.back-btn:hover{color:var(--t1);border-color:var(--gold)}
+.back-btn.show{display:flex}
+
+/* STREAK PILL (compact) */
+@keyframes flicker{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.streak-pill{display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(249,115,22,.1),rgba(239,68,68,.06));
+  border:1px solid rgba(249,115,22,.28);border-radius:20px;
+  padding:5px 13px 5px 9px;margin-bottom:10px}
+.sp-fire{font-size:17px;animation:flicker 2s ease-in-out infinite;line-height:1}
+.sp-num{font-size:17px;font-weight:900;color:var(--orange);line-height:1;font-variant-numeric:tabular-nums}
+.sp-unit{font-size:11px;color:var(--t2)}
+.sp-sep{width:1px;height:13px;background:rgba(249,115,22,.22);margin:0 2px}
+.sp-msg{font-size:12px;color:var(--t1);font-weight:500}
+
+/* MIND MAP CANVAS */
+.mm-canvas{position:relative;width:100%;height:520px;background:#06090f;overflow:hidden;border-radius:0 0 11px 11px}
+.mm-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.mm-nodes{position:absolute;inset:0}
+.mm-toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+.mm-root{position:absolute;transform:translate(-50%,-50%);z-index:10;
+  background:linear-gradient(135deg,var(--purple),var(--emerald));
+  color:#fff;border-radius:14px;padding:12px 24px;font-size:14px;font-weight:700;
+  text-align:center;min-width:120px;max-width:190px;word-break:break-word;
+  box-shadow:0 4px 28px rgba(168,85,247,.45);cursor:pointer;user-select:none;line-height:1.4}
+.mm-root:hover{opacity:.88}
+.mm-main{position:absolute;transform:translate(-50%,-50%);z-index:10;
+  border-radius:10px;padding:9px 14px 5px;font-size:13px;font-weight:600;
+  text-align:center;min-width:86px;max-width:148px;word-break:break-word;
+  border:2px solid;cursor:default;user-select:none;line-height:1.35}
+.mm-sub{position:absolute;transform:translate(-50%,-50%);z-index:10;
+  padding:4px 10px 2px;font-size:12px;text-align:center;
+  min-width:68px;max-width:120px;word-break:break-word;
+  border-bottom:2px solid;cursor:default;user-select:none;line-height:1.3}
+.mm-actions{display:flex;justify-content:center;gap:5px;margin-top:5px}
+.mm-act{border:none;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;line-height:1.6}
+.mm-sub-actions{display:flex;justify-content:center;margin-top:2px}
+.mm-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:var(--t2);font-size:13px;flex-direction:column;gap:8px;pointer-events:none}
+.mm-empty-ico{font-size:32px;opacity:.4}
+.mm-canvas.dragging{cursor:grabbing!important}
+.mm-canvas.dragging *{cursor:grabbing!important;user-select:none}
+
+/* PINNED GOALS */
+.pin-btn{background:none;border:none;font-size:14px;cursor:pointer;
+  padding:2px 4px;opacity:.28;transition:all .15s;flex-shrink:0;line-height:1}
+.pin-btn.on{opacity:1}
+.pin-btn:hover{opacity:.6}
+.pq-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
+.pq-row:last-child{border-bottom:none;padding-bottom:0}
+.pq-row:first-child{padding-top:0}
+.pq-circ{width:18px;height:18px;border:2px solid var(--border);border-radius:50%;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:9px;cursor:pointer;transition:all .2s}
+.pq-circ:hover{border-color:var(--emerald)}
+.pq-circ.done{background:var(--emerald);border-color:var(--emerald);color:#000}
+.pq-lbl{font-size:13px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pq-lbl.done{text-decoration:line-through;color:var(--t2)}
+.pq-xp{font-size:11px;color:var(--gold);white-space:nowrap}
+
+/* CARDS */
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:15px;margin-bottom:12px}
+.ctitle{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.crow{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.crow .ctitle{margin-bottom:0}
+
+/* ITEMS */
+.item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.item:last-child{border-bottom:none;padding-bottom:0}
+.item:first-child{padding-top:0}
+.circle{width:22px;height:22px;border:2px solid var(--border);border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:11px;font-weight:700}
+.circle:hover{border-color:var(--emerald)}
+.circle.done{background:var(--emerald);border-color:var(--emerald);color:#000}
+.sq{width:24px;height:24px;border:2px solid var(--border);border-radius:7px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:13px}
+.sq:hover{border-color:var(--gold)}
+.sq.done{background:var(--gold);border-color:var(--gold)}
+.iinfo{flex:1;min-width:0}
+.ititle{font-size:14px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ititle.done{text-decoration:line-through;color:var(--t2)}
+.imeta{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.txp{background:rgba(255,215,0,.15);color:var(--gold)}
+.tmind{background:rgba(168,85,247,.15);color:var(--purple)}
+.tbody{background:rgba(239,68,68,.15);color:#f87171}
+.tdisc{background:rgba(59,130,246,.15);color:var(--blue)}
+.ttm{background:rgba(0,212,170,.1);color:var(--emerald)}
+.streak{font-size:11px;color:var(--orange);display:flex;align-items:center;gap:2px}
+.delbtn{background:none;border:none;color:var(--t2);cursor:pointer;font-size:13px;
+  padding:4px 5px;border-radius:4px;transition:all .2s;flex-shrink:0;opacity:0}
+.item:hover .delbtn,.cach:hover .delbtn,.sitem:hover .delbtn{opacity:1}
+@media(hover:none){.delbtn{opacity:.5}}
+.delbtn:hover{color:var(--red);background:rgba(239,68,68,.1)}
+
+/* FORMS */
+.form{display:flex;flex-direction:column;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.form.hide{display:none}
+.frow{display:flex;gap:7px}
+input.f,select.f{background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  color:var(--t1);padding:8px 11px;font-size:14px;outline:none;transition:border-color .2s}
+input.f:focus,select.f:focus{border-color:var(--purple)}
+input.f{flex:1}
+input.f.w80{width:72px;flex:none}
+input.f.w55{width:52px;flex:none}
+.btn{background:linear-gradient(135deg,var(--purple),#6d28d9);border:none;border-radius:8px;
+  color:#fff;cursor:pointer;font-size:14px;font-weight:600;padding:8px 14px;transition:opacity .2s;white-space:nowrap}
+.btn:hover{opacity:.88}
+.btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#000}
+.btn.green{background:linear-gradient(135deg,#059669,var(--emerald));color:#000}
+.btn.red{background:var(--red)}
+.rst-chk{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:9px;cursor:pointer;transition:background .12s;font-size:13px;color:var(--t1)}
+.rst-chk:hover{background:rgba(239,68,68,.08)}
+.rst-chk input[type=checkbox]{accent-color:var(--red);width:15px;height:15px;cursor:pointer;flex-shrink:0}
+.rst-chk:has(input:checked){background:rgba(239,68,68,.1);color:#fca5a5}
+.btn.sm{padding:6px 12px;font-size:13px}
+.addbtn{background:none;border:1px solid var(--border);color:var(--t2);cursor:pointer;
+  font-size:18px;width:26px;height:26px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;transition:all .2s;line-height:1;flex-shrink:0}
+.addbtn:hover{color:var(--t1);border-color:var(--purple)}
+.hint{font-size:11px;color:var(--t2);margin-top:2px}
+
+/* TIMER */
+.timer-card{transition:border-color .3s,background .3s;position:relative;overflow:hidden}
+.timer-card.active{background:linear-gradient(160deg,#12082a,#0d1117,#081220);border-color:var(--purple)}
+.timer-card.active::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 30%,rgba(168,85,247,.08),transparent 60%)}
+.timer-idle-title{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.timer-task-select{width:100%;padding:11px 16px;font-size:15px;font-weight:600;border-radius:10px;
+  background:var(--bg2);border:1px solid var(--border);color:var(--t1);outline:none;cursor:pointer;
+  transition:border-color .2s,box-shadow .2s;appearance:none;margin-bottom:8px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.timer-task-select:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(168,85,247,.12)}
+.timer-cat-row{display:flex;gap:8px;align-items:center}
+.timer-cat-select{flex:1;padding:9px 12px;font-size:13px;border-radius:9px;
+  background:var(--bg2);border:1px solid var(--border);color:var(--t2);outline:none;cursor:pointer;
+  transition:border-color .2s;appearance:none}
+.timer-cat-select:focus{border-color:var(--purple)}
+.timer-start-btn{padding:10px 22px;font-size:15px;font-weight:700;border:none;border-radius:9px;
+  background:linear-gradient(135deg,#059669,var(--emerald));color:#000;cursor:pointer;
+  white-space:nowrap;transition:opacity .2s,transform .1s;flex-shrink:0}
+.timer-start-btn:hover{opacity:.88}.timer-start-btn:active{transform:scale(.97)}
+.timer-mgr-row{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+.timer-mgr-btn{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  color:var(--t2);cursor:pointer;font-size:11px;font-weight:600;padding:4px 12px;
+  transition:all .18s;letter-spacing:.3px}
+.timer-mgr-btn:hover{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,.08)}
+.timer-mgr-btn.on{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,.1)}
+.mgr-panel{margin-top:10px;padding:12px 14px;background:rgba(255,255,255,.025);
+  border-radius:10px;border:1px solid rgba(255,255,255,.06)}
+.mgr-list{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;min-height:0}
+.mgr-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;transition:background .15s}
+.mgr-item:hover{background:rgba(255,255,255,.05)}
+.mgr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.mgr-label{font-size:13px;flex:1;color:var(--t1)}
+.mgr-del{background:none;border:none;color:transparent;cursor:pointer;font-size:15px;
+  padding:0 3px;line-height:1;transition:color .15s}
+.mgr-item:hover .mgr-del{color:var(--t2)}
+.mgr-item:hover .mgr-del:hover{color:var(--red)}
+@media(hover:none){.mgr-del{color:var(--t2)}}
+.mgr-empty{font-size:12px;color:var(--t2);font-style:italic;padding:6px 4px;text-align:center}
+.mgr-add-row{display:flex;gap:6px;align-items:center}
+.mgr-add-row input[type=text]{flex:1;padding:7px 11px;font-size:13px;border-radius:8px;
+  background:var(--bg0);border:1px solid var(--border);color:var(--t1);outline:none;transition:border-color .2s}
+.mgr-add-row input[type=text]:focus{border-color:var(--purple)}
+.mgr-add-row input[type=color]{width:32px;height:32px;border:1px solid var(--border);
+  border-radius:7px;cursor:pointer;padding:2px;background:var(--bg0);flex-shrink:0}
+.mgr-add-btn{padding:6px 13px;font-size:12px;font-weight:700;border:none;border-radius:8px;
+  background:rgba(168,85,247,.2);color:var(--purple);cursor:pointer;white-space:nowrap;
+  transition:background .18s;border:1px solid rgba(168,85,247,.3)}
+.mgr-add-btn:hover{background:rgba(168,85,247,.32)}
+.timer-running-view{text-align:center;padding:6px 0}
+.timer-task{font-size:16px;font-weight:600;color:var(--t1);margin-bottom:6px}
+.timer-clock{font-size:54px;font-weight:900;color:var(--gold);letter-spacing:3px;
+  font-variant-numeric:tabular-nums;font-family:'Courier New',monospace;line-height:1;margin:10px 0;
+  animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.72}}
+.timer-catbadge{display:inline-block;margin:4px 0 16px;font-size:13px;font-weight:600;padding:4px 14px;border-radius:20px}
+.timer-ctrl-row{display:flex;gap:10px;justify-content:center}
+.timer-pause-btn{padding:10px 20px;font-size:14px;font-weight:600;border-radius:9px;
+  background:var(--bg2);color:var(--t1);border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.timer-pause-btn:hover{border-color:var(--t2)}
+.timer-stop-btn{padding:10px 28px;font-size:14px;font-weight:700;border:none;border-radius:9px;
+  background:linear-gradient(135deg,#b91c1c,var(--red));color:#fff;cursor:pointer;transition:opacity .2s}
+.sitem{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sitem:last-child{border-bottom:none;padding-bottom:0}
+.sitem:first-child{padding-top:0}
+.sico{font-size:18px;flex-shrink:0}
+.sinfo{flex:1;min-width:0}
+.stitle{font-size:13px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.smeta{font-size:11px;color:var(--t2);margin-top:2px;display:flex;gap:8px}
+.sdur{color:var(--emerald);font-weight:600}
+
+/* TIME BARS */
+.trow{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.trow:last-child{margin-bottom:0}
+.trlabel{font-size:13px;min-width:110px;flex-shrink:0}
+.trbg{flex:1;height:7px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.trfill{height:100%;border-radius:4px;transition:width .4s ease}
+.trval{font-size:12px;color:var(--t2);min-width:62px;text-align:right;white-space:nowrap}
+.total-row{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px}
+
+/* SKILLS */
+.sk{margin-bottom:14px}.sk:last-child{margin-bottom:0}
+.skrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.skname{font-size:14px;font-weight:600}
+.sklv{font-size:12px;color:var(--t2)}
+.skbg{height:9px;background:var(--bg2);border-radius:5px;overflow:hidden}
+.skfill{height:100%;border-radius:5px;transition:width .5s ease}
+.mind .skfill{background:linear-gradient(90deg,#7c3aed,var(--purple))}
+.body2 .skfill{background:linear-gradient(90deg,#dc2626,#f87171)}
+.disc .skfill{background:linear-gradient(90deg,#1d4ed8,var(--blue))}
+
+/* ACHIEVEMENTS */
+.achgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ach{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center}
+.ach.earned{border-color:var(--gold);background:rgba(255,215,0,.04)}
+.ach.locked{opacity:.35}
+.achico{font-size:26px;margin-bottom:5px}
+.achn{font-size:12px;font-weight:600}
+.achd{font-size:11px;color:var(--t2);margin-top:2px}
+.cach{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.cach:last-child{border-bottom:none;padding-bottom:0}
+.cach:first-child{padding-top:0}
+.cach-ico{font-size:22px;flex-shrink:0;width:28px;text-align:center}
+.cach-info{flex:1;min-width:0}
+.cach-name{font-size:13px;font-weight:600}
+.cach-name.done{color:var(--gold)}
+.cach-sub{font-size:11px;color:var(--t2);margin-top:2px}
+.cach-cond{color:var(--purple);font-size:10px}
+.ubtn{background:none;border:1px solid var(--emerald);color:var(--emerald);border-radius:6px;
+  cursor:pointer;font-size:12px;padding:4px 10px;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.ubtn:hover{background:rgba(0,212,170,.12)}
+.ubtn.done{border-color:var(--gold);color:var(--gold);cursor:default;opacity:.7}
+.ubtn.auto{border-color:var(--purple);color:var(--purple);cursor:default;opacity:.7}
+
+/* MONTHLY / STATS */
+.mnav{display:flex;align-items:center;gap:10px}
+.mlabel{font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap}
+.msgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.ms{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.msv{font-size:22px;font-weight:700;color:var(--gold)}
+.msl{font-size:11px;color:var(--t2);margin-top:1px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sv{font-size:30px;font-weight:700;color:var(--gold)}
+.sl{font-size:12px;color:var(--t2);margin-top:3px}
+
+/* LEVEL REWARDS MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-ov.show{opacity:1;pointer-events:all}
+.modal-box{background:var(--bg1);border:1px solid var(--border);border-radius:16px;
+  padding:22px;width:90%;max-width:460px;max-height:82vh;overflow-y:auto}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.modal-ttl{font-size:15px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--t2);cursor:pointer;font-size:20px;
+  padding:2px 6px;border-radius:4px;transition:color .2s}
+.modal-close:hover{color:var(--red)}
+.rw-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rw-lv{font-size:12px;color:var(--gold);font-weight:700;min-width:38px}
+.rw-earned{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;margin-bottom:6px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.12)}
+.fr-req-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);margin-bottom:8px}
+.fr-req-name{flex:1;font-size:13px;font-weight:600;color:var(--t1)}
+.fr-req-sub{font-size:11px;color:var(--t2)}
+.fr-card{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:background .15s}
+.fr-card:hover{background:rgba(255,255,255,.08)}
+.fr-avatar{font-size:28px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.06);flex-shrink:0;overflow:hidden}
+.fr-avatar img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.fr-info{flex:1;min-width:0}
+.fr-name{font-size:14px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-meta{font-size:11px;color:var(--t2);margin-top:2px}
+.rw-earned.used{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)}
+.rw-use-btn{background:rgba(255,215,0,.18);border:1px solid rgba(255,215,0,.35);color:var(--gold);border-radius:8px;font-size:11px;padding:3px 9px;cursor:pointer;white-space:nowrap;transition:background .15s}
+.rw-use-btn:hover{background:rgba(255,215,0,.3)}
+.rw-use-btn.done{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);color:var(--t2)}
+
+/* TOAST / LEVELUP */
+.toast{position:fixed;top:16px;right:16px;background:var(--bg1);border:1px solid var(--gold);
+  border-radius:10px;padding:11px 15px;font-size:13px;z-index:999;transform:translateX(130%);
+  transition:transform .3s ease;max-width:260px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(0)}
+.txpbig{font-size:15px;font-weight:700;color:var(--gold)}
+.lvup{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;
+  align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.lvup.show{opacity:1;pointer-events:all}
+.lvbox{background:linear-gradient(135deg,#1a1f35,#0d1117);border:2px solid var(--gold);
+  border-radius:20px;padding:36px 40px;text-align:center;animation:glow 1.2s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.3)}50%{box-shadow:0 0 60px rgba(255,215,0,.8)}}
+.lvuptag{font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:3px;margin-bottom:10px}
+.lvupnum{font-size:72px;font-weight:900;color:var(--gold);line-height:1}
+.lvupsub{font-size:15px;color:var(--t1);margin:8px 0 4px}
+.lvuprw{font-size:13px;color:var(--t2);margin-bottom:16px}
+
+/* TAB / MISC */
+.tab{display:none}.tab.on{display:block}
+.empty{text-align:center;color:var(--t2);padding:20px 0;font-size:13px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+
+/* AUTH SCREEN */
+.auth-screen{position:fixed;inset:0;background:#0d1117;z-index:2000;display:flex;align-items:center;justify-content:center}
+.auth-card{background:var(--bg1);border:1px solid var(--border);border-radius:20px;padding:32px 26px;width:90%;max-width:380px;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.auth-logo{font-size:52px;text-align:center;margin-bottom:6px}
+.auth-ttl{font-size:22px;font-weight:800;text-align:center;color:var(--gold);margin-bottom:22px;letter-spacing:1.5px}
+.auth-tabs{display:flex;gap:4px;background:var(--bg2);border-radius:10px;padding:4px;margin-bottom:18px}
+.auth-tab{flex:1;padding:9px;border:none;border-radius:7px;background:none;color:var(--t2);cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.auth-tab.on{background:var(--bg1);color:var(--t1);box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.auth-form{display:flex;flex-direction:column;gap:10px}
+.auth-err{color:var(--red);font-size:13px;text-align:center;min-height:18px;margin-top:6px}
+.pin-input{letter-spacing:8px;font-size:20px;text-align:center;font-weight:700}
+
+/* PROFILE MODAL */
+.avatar-big-wrap{text-align:center;margin-bottom:14px}
+.avatar-big{font-size:44px;width:76px;height:76px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--emerald));
+  border:2px solid var(--gold);display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:14px;max-height:130px;overflow-y:auto;padding:4px}
+.emo-btn{background:var(--bg2);border:2px solid transparent;border-radius:8px;font-size:22px;
+  width:40px;height:40px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;padding:0}
+.emo-btn:hover{border-color:var(--t2)}
+.emo-btn.sel{border-color:var(--gold);background:rgba(255,215,0,.12)}
+.prof-username{font-size:12px;color:var(--t2);text-align:center;margin-bottom:14px;font-style:italic}
+.prof-sep{height:1px;background:var(--border);margin:16px 0}
+.pbio{font-size:11px;color:var(--t2);margin-top:3px;font-style:italic;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.avatar{cursor:pointer;transition:opacity .2s}
+.avatar:hover{opacity:.82}
+
+/* CALENDAR */
+.cal-wrap{user-select:none}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.cal-dow-cell{text-align:center;font-size:11px;color:var(--t2);font-weight:700;padding:4px 0;letter-spacing:.3px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{background:var(--bg2);border-radius:9px;padding:7px 6px 6px;min-height:58px;cursor:pointer;
+  border:1px solid transparent;transition:all .15s;position:relative;overflow:hidden}
+.cal-day:hover{border-color:var(--border);background:#2a3140}
+.cal-day.today{border-color:var(--gold)!important;box-shadow:0 0 0 1px rgba(255,215,0,.15)}
+.cal-day.other-month{opacity:.25;pointer-events:none}
+.cal-day.has-act{background:rgba(0,212,170,.05)}
+.cal-day-num{font-size:12px;font-weight:700;color:var(--t1);line-height:1;margin-bottom:4px}
+.cal-day.today .cal-day-num{color:var(--gold)}
+.cal-dots{display:flex;gap:2px;flex-wrap:wrap}
+.cal-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cal-time{font-size:10px;color:var(--emerald);font-weight:700;margin-top:3px;line-height:1}
+.cal-xp{font-size:10px;color:var(--gold);font-weight:600;margin-top:1px;line-height:1}
+.cal-detail{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.cal-detail-date{font-size:13px;color:var(--t1);margin-bottom:10px;font-weight:700;display:flex;align-items:center;gap:8px}
+.cal-note-item{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+  background:rgba(255,215,0,.05);border-radius:8px;border-left:2px solid var(--gold);margin-bottom:4px}
+.cal-note-text{flex:1;font-size:13px;color:var(--t1);line-height:1.45;word-break:break-word}
+.cal-note-del{background:none;border:none;color:transparent;cursor:pointer;font-size:13px;
+  padding:0 2px;line-height:1;flex-shrink:0;transition:color .15s}
+.cal-note-item:hover .cal-note-del{color:var(--t2)}
+.cal-note-item:hover .cal-note-del:hover{color:var(--red)}
+@media(hover:none){.cal-note-del{color:var(--t2)}}
+.cal-note-add{display:flex;gap:6px;margin:8px 0 12px}
+.cal-note-add input{flex:1;padding:8px 12px;font-size:13px;border-radius:9px;
+  background:var(--bg0);border:1px solid var(--border);color:var(--t1);outline:none;transition:border-color .2s}
+.cal-note-add input:focus{border-color:var(--gold)}
+.cal-note-add-btn{padding:8px 14px;font-size:12px;font-weight:700;border:none;border-radius:9px;
+  background:rgba(255,215,0,.15);color:var(--gold);cursor:pointer;white-space:nowrap;
+  border:1px solid rgba(255,215,0,.25);transition:background .18s}
+.cal-note-add-btn:hover{background:rgba(255,215,0,.25)}
+.cal-day.has-note::after{content:'';position:absolute;top:5px;right:5px;
+  width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.8}
+.cal-nav-yr{background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+  color:var(--t2);cursor:pointer;font-size:13px;padding:3px 8px;transition:all .15s}
+.cal-nav-yr:hover{border-color:var(--purple);color:var(--purple)}
+.cal-section-title{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;
+  letter-spacing:.8px;margin:10px 0 6px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
+
+/* AVATAR IMAGE */
+.avatar-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.avatar-big-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.avatar-upload-btn{display:inline-flex;align-items:center;gap:5px;margin-top:7px;
+  padding:5px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  color:var(--t2);font-size:12px;cursor:pointer;transition:all .18s}
+.avatar-upload-btn:hover{border-color:var(--purple);color:var(--purple)}
+
+/* RESPONSIVE */
+@media(max-width:680px){
+  .header{padding:12px 14px;position:relative}
+  .xpbg{width:130px}
+  .mq-panel{min-width:0;max-width:100%;flex:1 1 100%}
+  .body{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:static;border-right:none;
+    border-bottom:1px solid var(--border);padding:4px 0;flex-direction:row;overflow-x:auto}
+  .sidebar-ttl{display:none}
+  .navlink{flex-direction:column;gap:3px;border-left:none;border-bottom:3px solid transparent;
+    padding:8px 12px;min-width:60px;justify-content:center;align-items:center}
+  .navlink.on{border-left-color:transparent;border-bottom-color:var(--gold)}
+  .nav-ico{width:auto}
+  .content{padding:14px 14px 60px}
+  .streak-chip{flex-wrap:wrap}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<!-- Auth Screen -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">⚔️</div>
+    <div class="auth-ttl">LIFE QUEST</div>
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="tabLogin" onclick="showAuthTab('login')">Нэвтрэх</button>
+      <button class="auth-tab" id="tabReg" onclick="showAuthTab('reg')">Бүртгүүлэх</button>
+    </div>
+    <!-- Login -->
+    <div class="auth-form" id="authLogin">
+      <input type="text" class="f" id="liUser" placeholder="Хэрэглэгчийн нэр"
+        autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('liPin').focus()">
+      <input type="password" class="f pin-input" id="liPin" maxlength="6" placeholder="••••"
+        autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <div style="display:flex;align-items:center;gap:7px;padding:0 2px">
+        <input type="checkbox" id="liRemember" style="accent-color:var(--gold);width:15px;height:15px;cursor:pointer">
+        <label for="liRemember" style="font-size:12px;color:var(--t2);cursor:pointer;user-select:none">Нэр, кодыг сануулах</label>
+      </div>
+      <button class="btn gold" onclick="doLogin()" style="font-size:15px;padding:11px">Нэвтрэх →</button>
+    </div>
+    <!-- Register -->
+    <div class="auth-form" id="authReg" style="display:none">
+      <input type="text" class="f" id="regUser" placeholder="Хэрэглэгчийн нэр (нэвтрэхэд хэрэглэнэ)"
+        autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('regName').focus()">
+      <input type="text" class="f" id="regName" placeholder="Дэлгэцийн нэр (жишэ: Бат)"
+        onkeydown="if(event.key==='Enter')document.getElementById('regPin').focus()">
+      <input type="password" class="f pin-input" id="regPin" maxlength="6" placeholder="PIN (4–6 тоо)"
+        autocomplete="new-password" onkeydown="if(event.key==='Enter')document.getElementById('regPin2').focus()">
+      <input type="password" class="f pin-input" id="regPin2" maxlength="6" placeholder="PIN давтах"
+        autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()">
+      <button class="btn gold" onclick="doRegister()" style="font-size:15px;padding:11px">Бүртгүүлэх →</button>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+  </div>
+</div>
+
+<!-- Invite Form Screen -->
+<div class="auth-screen" id="inviteScreen" style="display:none">
+  <div class="auth-card">
+    <div class="auth-logo">⚔️</div>
+    <div class="auth-ttl">LIFE QUEST</div>
+    <p style="text-align:center;color:var(--t2);font-size:13px;margin-bottom:18px;line-height:1.5">
+      Мэдээллээ бөглөснөөр таны Gmail руу мэдэгдэл очно.
+    </p>
+    <div class="auth-form" id="inviteFormFields">
+      <input type="text" class="f" id="inviteName" placeholder="Таны нэр" maxlength="50"
+        onkeydown="if(event.key==='Enter')document.getElementById('inviteEmail').focus()">
+      <input type="email" class="f" id="inviteEmail" placeholder="Gmail хаяг (@gmail.com)"
+        onkeydown="if(event.key==='Enter')submitInvite()">
+      <button class="btn gold" id="inviteBtn" onclick="submitInvite()" style="font-size:15px;padding:11px">
+        Илгээх →
+      </button>
+    </div>
+    <div class="auth-err" id="inviteErr"></div>
+    <div id="inviteSuccess" style="display:none;text-align:center;padding:16px 0">
+      <div style="font-size:40px;margin-bottom:10px">✅</div>
+      <div style="color:var(--emerald);font-size:16px;font-weight:700;margin-bottom:8px">Амжилттай!</div>
+      <div style="color:var(--t2);font-size:13px;line-height:1.5">Таны Gmail рүү мэдэгдэл явлаа.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Level Up -->
+<div class="lvup" id="lvup" onclick="closeLvUp()">
+  <div class="lvbox">
+    <div class="lvuptag">⚡ Level Up! ⚡</div>
+    <div class="lvupnum" id="lvupNum">2</div>
+    <div class="lvupsub">Шинэ түвшинд гарлаа!</div>
+    <div class="lvuprw" id="lvupRw"></div>
+    <button class="btn gold" onclick="closeLvUp()">Үргэлжлүүлэх →</button>
+  </div>
+</div>
+
+<!-- Friend Profile Modal -->
+<div class="modal-ov" id="friendModal">
+  <div class="modal-box" style="max-width:360px;text-align:center">
+    <div class="modal-hdr" style="justify-content:flex-end;margin-bottom:0">
+      <button class="modal-close" onclick="closeFriendModal()">✕</button>
+    </div>
+    <div id="friendModalAvatar" style="font-size:52px;margin:4px 0 8px"></div>
+    <div id="friendModalName" style="font-size:18px;font-weight:700;color:var(--t1)"></div>
+    <div id="friendModalUser" style="font-size:12px;color:var(--t2);margin-bottom:10px"></div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:12px">
+      <div style="text-align:center"><div id="friendModalLv" style="font-size:20px;font-weight:800;color:var(--gold)"></div><div style="font-size:11px;color:var(--t2)">Түвшин</div></div>
+      <div style="text-align:center"><div id="friendModalStreak" style="font-size:20px;font-weight:800;color:#fb923c"></div><div style="font-size:11px;color:var(--t2)">Streak 🔥</div></div>
+      <div style="text-align:center"><div id="friendModalXp" style="font-size:20px;font-weight:800;color:#a78bfa"></div><div style="font-size:11px;color:var(--t2)">XP</div></div>
+    </div>
+    <div id="friendModalBio" style="font-size:13px;color:var(--t2);font-style:italic;margin-bottom:14px;min-height:18px"></div>
+    <div id="friendModalQuests" style="text-align:left"></div>
+    <button class="btn red" style="margin-top:14px;width:100%;font-size:13px;padding:8px" id="friendModalRemoveBtn" onclick="removeFriend()">👋 Найзуудаас хасах</button>
+  </div>
+</div>
+
+<!-- Level Rewards Editor Modal -->
+<div class="modal-ov" id="lvModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-ttl">⭐ Түвшний шагналууд засах</div>
+      <button class="modal-close" onclick="closeLvModal()">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:14px">
+      Түвшин ахих бүрд харагдах шагналын текстийг өөрчлөх боломжтой.
+    </div>
+    <div id="lvRewardList"></div>
+    <button class="btn gold" onclick="saveLvRewards()" style="margin-top:16px;width:100%;font-size:15px;padding:10px">
+      💾 Хадгалах
+    </button>
+  </div>
+</div>
+
+<!-- Profile Edit Modal -->
+<div class="modal-ov" id="profileModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-ttl">👤 Профайл засах</div>
+      <button class="modal-close" onclick="closeProfileModal()">✕</button>
+    </div>
+    <div class="avatar-big-wrap">
+      <div class="avatar-big" id="profAvatarPrev">⚔️</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:6px">
+        <label class="avatar-upload-btn">
+          📷 Зураг оруулах
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="onAvatarFile(this)">
+        </label>
+        <button class="avatar-upload-btn" id="removeImgBtn" onclick="removeAvatarImg()" style="display:none">✕ Зураг хасах</button>
+      </div>
+      <div style="font-size:11px;color:var(--t2);margin-top:6px">эсвэл эмодж сонго</div>
+    </div>
+    <div class="emoji-grid" id="emojiGrid"></div>
+    <div class="prof-username" id="profUsername"></div>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px">
+      <input type="text" class="f" id="profName" placeholder="Дэлгэцийн нэр..." maxlength="30">
+      <input type="text" class="f" id="profBio" placeholder="Товч танилцуулга... (заавал биш)" maxlength="60">
+    </div>
+    <button class="btn gold" onclick="saveProfile()" style="width:100%;padding:10px;font-size:15px">💾 Хадгалах</button>
+    <div class="prof-sep"></div>
+    <button onclick="doLogout()" style="width:100%;padding:9px;background:none;border:1px solid rgba(239,68,68,.35);color:var(--red);border-radius:8px;cursor:pointer;font-size:13px;transition:background .2s" onmouseover="this.style.background='rgba(239,68,68,.1)'" onmouseout="this.style.background='none'">🚪 Гарах (Logout)</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="txpbig" id="toastXp"></div>
+  <div id="toastMsg"></div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="player-side">
+    <div class="avatar" id="avatar" onclick="openProfileModal()" title="Профайл засах">⚔️</div>
+    <div class="pinfo">
+      <div class="pname-row">
+        <span class="pname" id="pname" onclick="editName()">Тоглогч</span>
+        <input class="pname-input" id="pnameinput" style="display:none"
+          onblur="saveName()" onkeydown="if(event.key==='Enter')saveName()">
+        <span class="lvbadge" id="lvbadge" onclick="openLvModal()" title="Шагналуудаа засах" style="position:relative">LV. 1<span id="rwBadge" style="display:none;position:absolute;top:-7px;right:-8px;background:#f87171;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;align-items:center;justify-content:center;font-weight:700;pointer-events:none"></span></span>
+      </div>
+      <div class="pbio" id="pbio"></div>
+      <div class="xp-row"><span id="xptext">0 / 100 XP</span><b id="txptext">∑ 0 XP</b></div>
+      <div class="xpbg"><div class="xpfill" id="xpfill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="mq-panel">
+    <div class="mq-label" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="navToMM(event)">
+      <span>🎯 Гол зорилго</span>
+      <span style="font-size:9px;opacity:.65;letter-spacing:.5px">🗺 MAP →</span>
+    </div>
+    <div class="mq-goals" id="mqGoals"></div>
+    <div class="mq-add-row">
+      <input type="text" class="mq-add-input" id="mqAddInput" placeholder="+ Зорилго нэмэх..."
+        onkeydown="if(event.key==='Enter')addMQ()">
+      <button class="mq-add-btn" onclick="addMQ()">Нэмэх</button>
+    </div>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="body">
+  <nav class="sidebar">
+    <div class="sidebar-ttl">Цэс</div>
+    <button class="navlink" onclick="nav(this,'mindmap')" id="navMindmap"><span class="nav-ico">🗺</span><span>Mind Map</span></button>
+    <button class="navlink" onclick="nav(this,'quests')"><span class="nav-ico">⚔️</span><span>Даалгавар</span></button>
+    <button class="navlink" onclick="nav(this,'daily')"><span class="nav-ico">🔁</span><span>Өдөр тутам</span></button>
+    <button class="navlink" onclick="navCal(this)"><span class="nav-ico">📅</span><span>Календар</span></button>
+    <button class="navlink" onclick="nav(this,'skills')"><span class="nav-ico">🌳</span><span>Чадвар</span></button>
+    <button class="navlink" onclick="nav(this,'ach')"><span class="nav-ico">🏆</span><span>Шагнал</span></button>
+    <button class="navlink" onclick="nav(this,'stats')"><span class="nav-ico">📊</span><span>Статистик</span></button>
+    <button class="navlink" id="navFriends" onclick="nav(this,'friends')"><span class="nav-ico">👥</span><span>Найзууд</span><span id="friendReqBadge" style="display:none;background:#f87171;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;font-weight:700;margin-left:4px"></span></button>
+  </nav>
+
+  <main class="content">
+
+    <!-- BACK BUTTON -->
+    <button class="back-btn" id="backBtn" onclick="goHome()">← Нүүр хуудас</button>
+
+    <!-- HOME CONTENT -->
+    <div id="homeContent">
+      <!-- Streak pill (compact) -->
+      <div class="streak-pill">
+        <span class="sp-fire">🔥</span>
+        <span class="sp-num" id="streakNum">0</span>
+        <span class="sp-unit">өдөр</span>
+        <span class="sp-sep"></span>
+        <span class="sp-msg" id="streakMsg">Эхлүүлцгээе!</span>
+      </div>
+
+      <!-- Pinned goals -->
+      <div class="card" id="pinnedSection" style="display:none;padding:12px 15px">
+        <div class="crow" style="margin-bottom:8px">
+          <div class="ctitle">📌 Тогшигдсон зорилго</div>
+        </div>
+        <div id="pinnedList"></div>
+      </div>
+
+      <!-- Timer card (idle + running in one) -->
+      <div class="card timer-card" id="timerCard">
+        <!-- Idle form -->
+        <div id="timerIdle">
+          <div class="timer-idle-title">⏱ Цаг хэмжих</div>
+          <select class="timer-task-select" id="timerTitle"></select>
+          <div class="timer-cat-row">
+            <select class="timer-cat-select" id="timerCat"></select>
+            <button class="timer-start-btn" onclick="startTimer()">▶ Эхлэх</button>
+          </div>
+          <div class="timer-mgr-row">
+            <button class="timer-mgr-btn" id="taskMgrBtn" onclick="toggleTaskMgr()">✦ Хийх зүйл</button>
+            <button class="timer-mgr-btn" id="catMgrBtn" onclick="toggleCatMgr()">◈ Ангилал</button>
+          </div>
+          <div class="mgr-panel" id="taskMgr" style="display:none">
+            <div class="mgr-list" id="taskList"></div>
+            <div class="mgr-add-row">
+              <input type="text" id="newTaskName" placeholder="Шинэ зүйл нэмэх..." onkeydown="if(event.key==='Enter')addTask()">
+              <button class="mgr-add-btn" onclick="addTask()">+ Нэмэх</button>
+            </div>
+          </div>
+          <div class="mgr-panel" id="catMgr" style="display:none">
+            <div class="mgr-list" id="catList"></div>
+            <div class="mgr-add-row">
+              <input type="text" id="newCatName" placeholder="Шинэ ангилал...">
+              <input type="color" id="newCatColor" value="#4ecdc4">
+              <button class="mgr-add-btn" onclick="addCat()">+ Нэмэх</button>
+            </div>
+          </div>
+        </div>
+        <!-- Running display -->
+        <div class="timer-running-view" id="timerRunning" style="display:none">
+          <div class="timer-task" id="timerTaskText"></div>
+          <div class="timer-catbadge" id="timerCatBadge"></div>
+          <div class="timer-clock" id="timerClock">0с</div>
+          <div id="timerXpPreview" style="font-size:12px;color:var(--gold);opacity:.7;margin:4px 0 2px;min-height:18px"></div>
+          <div class="timer-ctrl-row">
+            <button class="timer-pause-btn" id="timerPauseBtn" onclick="pauseResumeTimer()">⏸ Зогсоох</button>
+            <button class="timer-stop-btn" onclick="stopTimer()">⏹ Дуусгах</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today time + sessions -->
+      <div class="card">
+        <div style="margin-bottom:12px">
+          <div class="ctitle" style="margin-bottom:10px">📊 Өнөөдрийн цаг</div>
+          <div id="todayTimeBars"></div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:12px">
+          <div class="ctitle" style="margin-bottom:10px">📋 Сессүүд</div>
+          <div id="sessionList"></div>
+        </div>
+      </div>
+    </div><!-- #homeContent -->
+
+    <!-- TAB PAGES -->
+    <div class="tab" id="tab-quests">
+      <div class="card">
+        <div class="crow">
+          <div class="ctitle">⚔️ Даалгаварууд</div>
+          <button class="addbtn" onclick="toggleForm('qform')" id="qformbtn">+</button>
+        </div>
+        <div id="qlist"></div>
+        <div class="form hide" id="qform">
+          <div class="frow"><input type="text" class="f" id="qtitle" placeholder="Даалгавар нэр..." onkeydown="if(event.key==='Enter')addQuest()"></div>
+          <div class="frow">
+            <select class="f" id="qcat"></select>
+            <input type="number" class="f w80" id="qxp" value="50" min="10" max="500" placeholder="XP">
+            <button class="btn" onclick="addQuest()">Нэмэх</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-daily">
+      <div class="card">
+        <div class="crow">
+          <div class="ctitle">📅 Өдөр тутмын зуршил</div>
+          <button class="addbtn" onclick="toggleForm('hform')" id="hformbtn">+</button>
+        </div>
+        <div id="hlist"></div>
+        <div class="form hide" id="hform">
+          <div class="frow"><input type="text" class="f" id="htitle" placeholder="Зуршил нэр..." onkeydown="if(event.key==='Enter')addHabit()"></div>
+          <div class="frow">
+            <select class="f" id="hcat"></select>
+            <input type="number" class="f w55" id="hxp" value="20" min="5" max="100" placeholder="XP">
+            <input type="number" class="f w55" id="hmins" placeholder="⏱мин" min="1" max="480">
+            <button class="btn green" onclick="addHabit()">Нэмэх</button>
+          </div>
+          <div class="hint">⏱мин — нэг удаа зарцуулах минут (заавал биш)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-skills">
+      <div class="card">
+        <div class="ctitle" style="margin-bottom:16px">🌳 Чадварын мод</div>
+        <div class="sk mind">
+          <div class="skrow"><div class="skname">🧠 Оюун ухаан</div><div class="sklv" id="mindlv">Lv. 1 · 0 XP</div></div>
+          <div class="skbg"><div class="skfill" id="mindbar" style="width:0%"></div></div>
+        </div>
+        <div class="sk body2" style="margin-top:16px">
+          <div class="skrow"><div class="skname">💪 Бие</div><div class="sklv" id="bodylv">Lv. 1 · 0 XP</div></div>
+          <div class="skbg"><div class="skfill" id="bodybar" style="width:0%"></div></div>
+        </div>
+        <div class="sk disc" style="margin-top:16px">
+          <div class="skrow"><div class="skname">⏳ Сахилга</div><div class="sklv" id="disclv">Lv. 1 · 0 XP</div></div>
+          <div class="skbg"><div class="skfill" id="discbar" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-ach">
+      <div class="card">
+        <div class="ctitle" style="margin-bottom:14px">🏆 Системийн амжилтууд</div>
+        <div class="achgrid" id="achgrid"></div>
+      </div>
+      <div class="card">
+        <div class="crow">
+          <div class="ctitle">🎖️ Хувийн амжилтууд</div>
+          <button class="addbtn" onclick="toggleForm('cform')" id="cformbtn">+</button>
+        </div>
+        <div id="clist"></div>
+        <div class="form hide" id="cform">
+          <div class="frow">
+            <input type="text" class="f w80" id="cico" value="🎯" maxlength="4">
+            <input type="text" class="f" id="cname" placeholder="Амжилтын нэр..." maxlength="40">
+          </div>
+          <div class="frow"><input type="text" class="f" id="cdesc" placeholder="Тайлбар..." maxlength="60"></div>
+          <div class="frow">
+            <select class="f" id="ctype" onchange="toggleCVal()">
+              <option value="manual">✋ Гараар нээх</option>
+              <option value="xp">✨ Нийт XP ≥</option>
+              <option value="quests">⚔️ Даалгавар ≥</option>
+              <option value="streak">🔥 Streak ≥</option>
+              <option value="level">⭐ Түвшин ≥</option>
+            </select>
+            <input type="number" class="f w80" id="cval" value="100" min="1" style="display:none">
+            <button class="btn" onclick="addCustomAch()">Нэмэх</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIND MAP TAB -->
+    <div class="tab" id="tab-mindmap">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="mm-toolbar">
+          <div class="ctitle">🗺 Mind Map</div>
+          <div style="display:flex;gap:7px">
+            <button class="btn sm gold" onclick="addMMGoal()">+ Шинэ зорилго</button>
+            <button class="btn sm" id="mmLinkBtn" style="background:var(--bg2);color:var(--t2);border:1px solid var(--border)" onclick="toggleMMLink()">🔗 Холбох</button>
+            <button class="btn sm" style="background:var(--bg2);color:var(--t2);border:1px solid var(--border)" onclick="clearMM()">Цэвэрлэх</button>
+          </div>
+        </div>
+        <div class="mm-canvas" id="mmCanvas">
+          <svg class="mm-svg" id="mmSvg"></svg>
+          <div class="mm-nodes" id="mmNodes"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR TAB -->
+    <div class="tab" id="tab-calendar">
+      <div class="card cal-wrap">
+        <div class="crow" style="margin-bottom:14px">
+          <div class="ctitle">📅 Календар</div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <button class="cal-nav-yr" onclick="calPrevYear()" title="Өмнөх жил">«</button>
+            <button class="addbtn" onclick="calPrev()">←</button>
+            <span class="mlabel" id="calLabel" style="min-width:130px;text-align:center"></span>
+            <button class="addbtn" onclick="calNext()">→</button>
+            <button class="cal-nav-yr" onclick="calNextYear()" title="Дараа жил">»</button>
+          </div>
+        </div>
+        <div id="calGrid"></div>
+        <div class="cal-detail" id="calDetail" style="display:none">
+          <div class="cal-detail-date" id="calDetailDate"></div>
+          <div class="cal-note-add">
+            <input type="text" id="calNoteInput" placeholder="📝 Тэмдэглэл нэмэх..." onkeydown="if(event.key==='Enter')addCalNote()">
+            <button class="cal-note-add-btn" onclick="addCalNote()">+ Нэмэх</button>
+          </div>
+          <div id="calNotesList"></div>
+          <div id="calDetailContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-stats">
+      <div class="card">
+        <div class="crow" style="margin-bottom:0">
+          <div class="ctitle">📅 Сарын тайлан</div>
+          <div class="mnav">
+            <button class="addbtn" onclick="prevMonth()">←</button>
+            <span class="mlabel" id="mlabel"></span>
+            <button class="addbtn" onclick="nextMonth()">→</button>
+          </div>
+        </div>
+        <div class="msgrid" id="msgrid"></div>
+        <div style="border-top:1px solid var(--border);padding-top:12px">
+          <div class="ctitle" style="margin-bottom:10px">⏱ Зарцуулсан нийт цаг</div>
+          <div id="timegrid"></div>
+        </div>
+      </div>
+      <div class="sgrid">
+        <div class="sc"><div class="sv" id="stlv">1</div><div class="sl">Одоогийн Түвшин</div></div>
+        <div class="sc"><div class="sv" id="stxp">0</div><div class="sl">Нийт XP</div></div>
+        <div class="sc"><div class="sv" id="stq">0</div><div class="sl">Дуусгасан даалгавар</div></div>
+        <div class="sc"><div class="sv" id="stsk">0</div><div class="sl">🔥 Streak өдөр</div></div>
+        <div class="sc"><div class="sv" id="sth">0</div><div class="sl">Зуршил гүйцэтгэл</div></div>
+        <div class="sc"><div class="sv" id="stac">0</div><div class="sl">Амжилт</div></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="ctitle" style="color:var(--red);margin-bottom:10px">⚠️ Өгөгдөл устгах</div>
+        <button class="btn red" onclick="document.getElementById('resetPanel').style.display='flex'">Өгөгдөл устгах →</button>
+        <div id="resetPanel" style="display:none;flex-direction:column;gap:0;margin-top:12px">
+          <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Устгах зүйлсээ сонгоод устга. Буцааж болохгүй!</div>
+          <div id="resetCheckList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+            <label class="rst-chk"><input type="checkbox" value="quests"><span>⚔️ Даалгаварууд</span></label>
+            <label class="rst-chk"><input type="checkbox" value="habits"><span>📅 Зуршлууд & streak</span></label>
+            <label class="rst-chk"><input type="checkbox" value="sessions"><span>⏱ Цаг бүртгэл</span></label>
+            <label class="rst-chk"><input type="checkbox" value="mindmap"><span>🗺 Mind map</span></label>
+            <label class="rst-chk"><input type="checkbox" value="xp"><span>✨ XP & Түвшин</span></label>
+            <label class="rst-chk"><input type="checkbox" value="achs"><span>🏆 Амжилт & Шагналын бүртгэл</span></label>
+            <label class="rst-chk"><input type="checkbox" value="calnotes"><span>📝 Хуанлийн тэмдэглэл</span></label>
+            <label class="rst-chk"><input type="checkbox" value="cats"><span>🗂 Ангилал & Даалгаварын жагсаалт</span></label>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn red" style="flex:1" onclick="doResetSelected()">Сонгосныг устгах</button>
+            <button class="btn red" style="flex:1;opacity:.7" onclick="doReset()">Бүгдийг устгах</button>
+            <button class="btn" style="flex:1" onclick="document.getElementById('resetPanel').style.display='none'">Болих</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friends Tab -->
+    <div class="tab" id="tab-friends">
+      <div class="card">
+        <div class="ctitle" style="margin-bottom:12px">👥 Найзууд нэмэх</div>
+        <div style="display:flex;gap:8px">
+          <input class="f" id="friendSearchInp" placeholder="Хэрэглэгчийн нэр (@username)..." style="flex:1" onkeydown="if(event.key==='Enter')sendFriendReq()">
+          <button class="btn gold" onclick="sendFriendReq()">Хүсэлт явуулах</button>
+        </div>
+        <div id="friendSearchErr" style="font-size:12px;color:#f87171;margin-top:6px;min-height:16px"></div>
+      </div>
+      <div class="card" id="friendReqsCard" style="display:none">
+        <div class="ctitle" style="margin-bottom:10px">📬 Ирсэн хүсэлтүүд</div>
+        <div id="friendReqsList"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle" style="margin-bottom:10px">🤝 Найзуудын жагсаалт</div>
+        <div id="friendsList"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const ACHS=[
+  {id:'first_quest',ico:'⚔️',name:'Анхны алхам', desc:'Эхний даалгавар'},
+  {id:'quest_5',    ico:'🗡️',name:'Тулаанч',      desc:'5 даалгавар'},
+  {id:'quest_10',   ico:'🏅',name:'Баатар',        desc:'10 даалгавар'},
+  {id:'quest_25',   ico:'👑',name:'Легенд',        desc:'25 даалгавар'},
+  {id:'streak_3',   ico:'🔥',name:'Халуун гал',    desc:'3 хоног streak'},
+  {id:'streak_7',   ico:'🌟',name:'Долоон хоног',  desc:'7 хоног streak'},
+  {id:'streak_30',  ico:'💎',name:'Алмаз',         desc:'30 хоног streak'},
+  {id:'level_5',    ico:'⭐',name:'Дундаж баатар', desc:'Түвшин 5'},
+  {id:'level_10',   ico:'🌙',name:'Мастер',        desc:'Түвшин 10'},
+  {id:'level_20',   ico:'🔮',name:'Хиймэт',        desc:'Түвшин 20'},
+  {id:'first_habit',ico:'📅',name:'Зуршил',        desc:'Эхний зуршил'},
+  {id:'daily_all',  ico:'✅',name:'Бүрэн өдөр',    desc:'Бүх зуршлыг нэг өдөр'},
+];
+// Default rewards (fallback if user hasn't customized)
+const DEF_REWARDS={2:'Амрах 10 минут авах!',3:'Дуртай хоол идэх!',
+  5:'Кино үзэх эрх!',7:'Найзтайгаа тоглоход болно!',
+  10:'Том шагнал! Хүссэн зүйлээ хийх!',15:'Нэг өдрийн бүрэн амралт!',20:'Тусгай шагнал авах!'};
+const CC={mind:'#a855f7',body:'#f87171',disc:'#3b82f6'};
+const CL={mind:'🧠 Оюун',body:'💪 Бие',disc:'⏳ Сахилга'};
+const CI={mind:'🧠',body:'💪',disc:'⏳'};
+const CBG={mind:'rgba(168,85,247,.18)',body:'rgba(239,68,68,.18)',disc:'rgba(59,130,246,.18)'};
+function catColor(id){return(D.cats||[]).find(c=>c.id===id)?.color||CC[id]||'#888'}
+function catLabel(id){return(D.cats||[]).find(c=>c.id===id)?.name||CL[id]||id}
+function catIcon(id){const n=catLabel(id);const m=n.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u);return m?m[0]:(CI[id]||'⏱')}
+function catBg(id){const c=catColor(id);const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);return`rgba(${r},${g},${b},.18)`}
+
+// ── ACCOUNTS ──────────────────────────────────────────────────────────────────
+const ACCTS_KEY='lq_accounts';
+const AVATARS=['⚔️','🧙','🦁','🐉','🔮','🌙','⚡','🔥','🌟','💎','👑','🦊','🐺','🦅','🌊','🎯','🚀','🧠','💪','🏹','🦸','🎮','🏆','💡','🎵'];
+function getAccts(){try{return JSON.parse(localStorage.getItem(ACCTS_KEY))||{}}catch{return{}}}
+function saveAccts(a){localStorage.setItem(ACCTS_KEY,JSON.stringify(a))}
+function getCurUser(){return sessionStorage.getItem('lq_cur')||''}
+function setCurUser(u){sessionStorage.setItem('lq_cur',u)}
+function dataKey(u){return'lq2_'+u}
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+function def(){return{
+  player:{name:'Тоглогч',level:1,totalXp:0,mainQuest:'',mainQuests:[],avatar:'⚔️',bio:''},
+  quests:[],habits:[],skills:{mind:0,body:0,disc:0},
+  earned:[],customAchs:[],streak:{},xpLog:[],
+  sessions:[],activeTimer:null,rewards:{},rewardLog:[],stats:{qDone:0,hDone:0},friends:[],
+  mindMap:{goals:[],links:[]},pinnedIds:[],
+  cats:[{id:'mind',name:'🧠 Оюун ухаан',color:'#a855f7'},{id:'body',name:'💪 Бие',color:'#f87171'},{id:'disc',name:'⏳ Сахилга',color:'#3b82f6'}],
+  tasks:[],calNotes:{}
+}}
+let D=def();
+function load(){
+  const u=getCurUser();if(!u)return def();
+  try{const s=localStorage.getItem(dataKey(u));if(s)return mg(JSON.parse(s))}catch{}return def();
+}
+function mg(d){
+  if(!d.xpLog)d.xpLog=[];if(!d.customAchs)d.customAchs=[];
+  if(!d.sessions)d.sessions=[];if(!('activeTimer'in d))d.activeTimer=null;
+  if(!d.stats)d.stats={qDone:0,hDone:0};if(!d.rewards)d.rewards={};if(!d.rewardLog)d.rewardLog=[];
+  d.rewardLog.forEach(r=>{if(!('seen'in r))r.seen=true;});
+  if(!d.player.avatar)d.player.avatar='⚔️';if(!d.player.bio)d.player.bio='';
+  // migrate old mindMap formats → goals array
+  if(!d.mindMap||d.mindMap.branches!==undefined||d.mindMap.children!==undefined){
+    const old=d.mindMap?.children||[];
+    d.mindMap={goals:[{id:'g0',text:d.player?.mainQuest||'Гол зорилго',x:null,y:null,
+      children:old.map(c=>({...c,dx:null,dy:null}))}]};
+  }
+  if(!d.pinnedIds)d.pinnedIds=[];
+  if(!d.mindMap.links)d.mindMap.links=[];
+  if(!d.cats)d.cats=[{id:'mind',name:'🧠 Оюун ухаан',color:'#a855f7'},{id:'body',name:'💪 Бие',color:'#f87171'},{id:'disc',name:'⏳ Сахилга',color:'#3b82f6'}];
+  if(!d.tasks)d.tasks=[];
+  if(!('avatarImg'in d.player))d.player.avatarImg=null;
+  if(!d.player.mainQuests){d.player.mainQuests=d.player.mainQuest?[{id:'mq0',text:d.player.mainQuest,done:false}]:[];}
+  if(!d.calNotes)d.calNotes={};
+  if(!d.friends)d.friends=[];
+  return d;
+}
+function save(){const u=getCurUser();if(u)localStorage.setItem(dataKey(u),JSON.stringify(D))}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+function showAuthTab(t){
+  document.getElementById('authLogin').style.display=t==='login'?'flex':'none';
+  document.getElementById('authReg').style.display=t==='reg'?'flex':'none';
+  document.getElementById('tabLogin').classList.toggle('on',t==='login');
+  document.getElementById('tabReg').classList.toggle('on',t==='reg');
+  document.getElementById('authErr').textContent='';
+}
+function authErr(msg){document.getElementById('authErr').textContent=msg}
+function hideAuthScreen(){document.getElementById('authScreen').style.display='none'}
+
+function doLogin(){
+  const user=document.getElementById('liUser').value.trim();
+  const pin=document.getElementById('liPin').value;
+  if(!user||!pin){authErr('Мэдээллийг бүрэн оруулна уу');return}
+  const accts=getAccts();
+  if(!accts[user]){authErr('Хэрэглэгч олдсонгүй');return}
+  if(accts[user].pin!==pin){authErr('PIN буруу байна');return}
+  const remember=document.getElementById('liRemember')?.checked;
+  if(remember){localStorage.setItem('lq_rem',JSON.stringify({user,pin}));}
+  else{localStorage.removeItem('lq_rem');}
+  setCurUser(user);D=load();hideAuthScreen();render();if(D.activeTimer)applyTimerUI();
+}
+
+function doRegister(){
+  const user=document.getElementById('regUser').value.trim();
+  const name=document.getElementById('regName').value.trim();
+  const pin=document.getElementById('regPin').value;
+  const pin2=document.getElementById('regPin2').value;
+  if(!user||user.length<2){authErr('Хэрэглэгчийн нэр хамгийн багадаа 2 тэмдэгт');return}
+  if(!/^\d{4,6}$/.test(pin)){authErr('PIN 4–6 оронтой тоо байх ёстой');return}
+  if(pin!==pin2){authErr('PIN таарахгүй байна');return}
+  const accts=getAccts();
+  if(accts[user]){authErr('Энэ нэр аль хэдийн бүртгэлтэй');return}
+  accts[user]={pin};saveAccts(accts);
+  setCurUser(user);D=def();D.player.name=name||user;
+  const old=localStorage.getItem('lq2');
+  if(old&&confirm('Хуучин өгөгдөл олдлоо. Импорт хийх үү?')){try{D=mg(JSON.parse(old))}catch{}}
+  save();hideAuthScreen();render();
+}
+
+function doLogout(){
+  if(!confirm('Гарах уу?'))return;
+  clearInterval(timerTick);timerTick=null;
+  sessionStorage.removeItem('lq_cur');D=def();
+  closeProfileModal();
+  document.getElementById('authScreen').style.display='flex';
+  document.getElementById('liUser').value='';document.getElementById('liPin').value='';
+  document.getElementById('authErr').textContent='';
+}
+
+// ── PROFILE ───────────────────────────────────────────────────────────────────
+let selAvatar='⚔️',selAvatarImg=null;
+function applyProfAvatar(){
+  const el=document.getElementById('profAvatarPrev');
+  const rBtn=document.getElementById('removeImgBtn');
+  if(selAvatarImg){el.innerHTML=`<img class="avatar-big-img" src="${selAvatarImg}">`;if(rBtn)rBtn.style.display='inline-flex';}
+  else{el.innerHTML='';el.textContent=selAvatar;if(rBtn)rBtn.style.display='none';}
+}
+function onAvatarFile(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{selAvatarImg=e.target.result;applyProfAvatar();};
+  reader.readAsDataURL(file);
+}
+function removeAvatarImg(){selAvatarImg=null;applyProfAvatar();}
+function openProfileModal(){
+  selAvatar=D.player.avatar||'⚔️';selAvatarImg=D.player.avatarImg||null;
+  applyProfAvatar();
+  document.getElementById('profName').value=D.player.name||'';
+  document.getElementById('profBio').value=D.player.bio||'';
+  document.getElementById('profUsername').textContent='@'+getCurUser();
+  document.getElementById('emojiGrid').innerHTML=AVATARS.map(e=>
+    `<button class="emo-btn${e===selAvatar?' sel':''}" onclick="pickAvatar('${e}')">${e}</button>`).join('');
+  document.getElementById('profileModal').classList.add('show');
+}
+function closeProfileModal(){document.getElementById('profileModal').classList.remove('show')}
+function pickAvatar(e){
+  selAvatar=e;selAvatarImg=null;
+  applyProfAvatar();
+  document.querySelectorAll('.emo-btn').forEach(b=>b.classList.toggle('sel',b.textContent===e));
+}
+function saveProfile(){
+  const name=document.getElementById('profName').value.trim();
+  if(name)D.player.name=name;
+  D.player.avatar=selAvatar;
+  D.player.avatarImg=selAvatarImg||null;
+  D.player.bio=document.getElementById('profBio').value.trim();
+  save();closeProfileModal();render();toast('✓','Профайл хадгалагдлаа!');
+}
+
+// ── LEVEL ─────────────────────────────────────────────────────────────────────
+function xpForLv(l){return l*100}
+function totForLv(l){return 50*(l-1)*l}
+function lvFromXp(x){let l=1;while(x>=totForLv(l+1))l++;return l}
+function xpProg(){const lv=D.player.level,need=xpForLv(lv),cur=D.player.totalXp-totForLv(lv);return{cur,need,pct:Math.min(100,cur/need*100)}}
+function giveXp(amt,cat){
+  const old=D.player.level;D.player.totalXp+=amt;
+  if(cat&&D.skills[cat]!==undefined)D.skills[cat]+=amt;
+  D.xpLog.push({d:today(),a:amt,c:cat||''});
+  D.player.level=lvFromXp(D.player.totalXp);
+  save();render();if(D.player.level>old)showLvUp(D.player.level);
+}
+
+// ── DATE / STREAK ─────────────────────────────────────────────────────────────
+function today(){return new Date().toISOString().split('T')[0]}
+function prevDay(d){const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()-1);return dt.toISOString().split('T')[0]}
+function habitDoneToday(id){const s=D.streak[today()];return!!(s&&s.includes(id))}
+function habitStreak(id){let n=0,d=today();while(true){const s=D.streak[d];if(!s||!s.includes(id))break;n++;d=prevDay(d)}return n}
+function globalStreak(){
+  if(!D.habits.length)return 0;let n=0,d=today();
+  while(true){const s=D.streak[d];if(!s||D.habits.some(h=>!s.includes(h.id)))break;n++;d=prevDay(d)}return n
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+let curPage='home';
+function nav(btn,id){
+  curPage=id;
+  document.getElementById('homeContent').style.display='none';
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.navlink').forEach(e=>e.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  btn.classList.add('on');
+  document.getElementById('backBtn').classList.add('show');
+  if(id==='stats')renderMonthly();
+  if(id==='mindmap')setTimeout(renderMindMap,0);
+  if(id==='friends'){renderFriends();updateFriendReqBadge();}
+}
+function navToMM(e){
+  if(e)e.stopPropagation();
+  if(!(D.mindMap.goals||[]).length)initMM();
+  document.getElementById('navMindmap').click();
+}
+function initMM(){
+  const labels=['Эхний зорилт','Хоёр дахь зорилт','Гурав дахь зорилт','Дөрөв дэх зорилт'];
+  D.mindMap={goals:[{id:'g'+Date.now(),text:D.player.mainQuest||'Гол зорилго',x:null,y:null,
+    children:labels.map((t,i)=>({id:'mm'+(Date.now()+i+1),text:t,side:i%2===0?'right':'left',ci:i,dx:null,dy:null,children:[]}))}]};
+  save();
+}
+function goHome(){
+  curPage='home';
+  document.getElementById('homeContent').style.display='block';
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.navlink').forEach(e=>e.classList.remove('on'));
+  document.getElementById('backBtn').classList.remove('show');
+  renderStreak();renderTodayTime();renderSessions();renderPinned();
+}
+
+// ── STREAK CHIP ───────────────────────────────────────────────────────────────
+function renderStreak(){
+  const sk=globalStreak();
+  document.getElementById('streakNum').textContent=sk;
+  let msg='Эхлүүлцгээе!';
+  if(sk>=30)msg='🏆 Та баатар!';
+  else if(sk>=14)msg='💎 2 долоо хоног!';
+  else if(sk>=7)msg='🌟 Долоо хоног!';
+  else if(sk>=3)msg='🔥 Халуун байна!';
+  else if(sk>=1)msg='✅ Маш сайн!';
+  document.getElementById('streakMsg').textContent=msg;
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────────────────
+// ── TASK + CATEGORY MANAGER ───────────────────────────────────────────────────
+function fillCatSelects(){
+  const opts=(D.cats||[]).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  ['timerCat','qcat','hcat'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const cur=el.value;el.innerHTML=opts;
+    if([...el.options].some(o=>o.value===cur))el.value=cur;
+  });
+  fillTaskSelect();
+}
+function fillTaskSelect(){
+  const el=document.getElementById('timerTitle');if(!el)return;
+  const cur=el.value;
+  const tasks=D.tasks||[];
+  if(!tasks.length){el.innerHTML='<option value="">— Хийх зүйл нэмэх —</option>';return;}
+  el.innerHTML=tasks.map(t=>`<option value="${esc(t.name)}">${esc(t.name)}</option>`).join('');
+  if([...el.options].some(o=>o.value===cur))el.value=cur;
+}
+function toggleTaskMgr(){
+  const el=document.getElementById('taskMgr'),btn=document.getElementById('taskMgrBtn');
+  if(!el)return;
+  const open=el.style.display==='none';
+  el.style.display=open?'block':'none';
+  btn?.classList.toggle('on',open);
+  if(open)renderTaskManager();
+}
+function renderTaskManager(){
+  const el=document.getElementById('taskList');if(!el)return;
+  const tasks=D.tasks||[];
+  if(!tasks.length){el.innerHTML='<div class="mgr-empty">Доор нэмнэ үү</div>';return;}
+  el.innerHTML=tasks.map(t=>`
+    <div class="mgr-item">
+      <span class="mgr-label">${esc(t.name)}</span>
+      <button class="mgr-del" onclick="delTask('${t.id}')">✕</button>
+    </div>`).join('');
+}
+function addTask(){
+  const name=document.getElementById('newTaskName')?.value.trim();if(!name)return;
+  if(!D.tasks)D.tasks=[];
+  if(D.tasks.some(t=>t.name===name))return;
+  D.tasks.push({id:'t'+Date.now(),name});
+  document.getElementById('newTaskName').value='';
+  save();fillTaskSelect();renderTaskManager();
+}
+function delTask(id){
+  D.tasks=(D.tasks||[]).filter(t=>t.id!==id);
+  save();fillTaskSelect();renderTaskManager();
+}
+function toggleCatMgr(){
+  const el=document.getElementById('catMgr'),btn=document.getElementById('catMgrBtn');
+  if(!el)return;
+  const open=el.style.display==='none';
+  el.style.display=open?'block':'none';
+  btn?.classList.toggle('on',open);
+  if(open)renderCatManager();
+}
+function renderCatManager(){
+  const el=document.getElementById('catList');if(!el)return;
+  el.innerHTML=(D.cats||[]).map(c=>`
+    <div class="mgr-item">
+      <span class="mgr-dot" style="background:${c.color}"></span>
+      <span class="mgr-label">${esc(c.name)}</span>
+      <button class="mgr-del" onclick="delCat('${c.id}')">✕</button>
+    </div>`).join('');
+}
+function addCat(){
+  const name=document.getElementById('newCatName')?.value.trim();if(!name)return;
+  const color=document.getElementById('newCatColor')?.value||'#4ecdc4';
+  if(!D.cats)D.cats=[];
+  D.cats.push({id:'c'+Date.now(),name,color});
+  document.getElementById('newCatName').value='';
+  save();fillCatSelects();renderCatManager();
+}
+function delCat(id){
+  D.cats=(D.cats||[]).filter(c=>c.id!==id);
+  save();fillCatSelects();renderCatManager();
+}
+
+let timerTick=null;
+function startTimer(){
+  const title=document.getElementById('timerTitle').value.trim();if(!title){toast('⚠','Эхлээд хийх зүйлээ нэмнэ үү');return;}
+  D.activeTimer={title,cat:document.getElementById('timerCat').value,startTs:Date.now(),pausedSecs:0,pausedAt:null};
+  document.getElementById('timerTitle').value='';save();applyTimerUI();
+}
+function pauseResumeTimer(){
+  if(!D.activeTimer)return;
+  if(D.activeTimer.pausedAt){
+    D.activeTimer.pausedSecs=(D.activeTimer.pausedSecs||0)+Math.floor((Date.now()-D.activeTimer.pausedAt)/1000);
+    D.activeTimer.pausedAt=null;
+  }else{
+    D.activeTimer.pausedAt=Date.now();
+  }
+  save();applyTimerUI();
+}
+function stopTimer(){
+  if(!D.activeTimer)return;
+  const{title,cat,startTs,pausedAt,pausedSecs=0}=D.activeTimer;
+  const endTs=pausedAt??Date.now();
+  const secs=Math.max(1,Math.round((endTs-startTs)/1000)-pausedSecs);
+  D.sessions.push({id:'s'+Date.now(),title,cat,startTs,startDate:today(),secs});
+  D.activeTimer=null;clearInterval(timerTick);timerTick=null;
+  const xpGain=Math.floor(secs/60);
+  if(xpGain>0)giveXp(xpGain,cat);
+  save();toast(`⏱ ${fmtSecs(secs)}${xpGain>0?` +${xpGain}XP`:''}`,`"${title}" дуусгалаа!`);
+  applyTimerUI();renderTodayTime();renderSessions();
+}
+function applyTimerUI(){
+  const on=!!D.activeTimer;
+  document.getElementById('timerIdle').style.display=on?'none':'block';
+  document.getElementById('timerRunning').style.display=on?'block':'none';
+  document.getElementById('timerCard').classList.toggle('active',on);
+  if(on){
+    document.getElementById('timerTaskText').textContent=D.activeTimer.title;
+    const b=document.getElementById('timerCatBadge');
+    b.textContent=catLabel(D.activeTimer.cat);b.style.background=catBg(D.activeTimer.cat);b.style.color=catColor(D.activeTimer.cat);
+    const paused=!!D.activeTimer.pausedAt;
+    const pb=document.getElementById('timerPauseBtn');
+    if(pb){pb.textContent=paused?'▶ Үргэлжлүүлэх':'⏸ Зогсоох';pb.style.background=paused?'var(--emerald)':'';;pb.style.color=paused?'#000':'';pb.style.borderColor=paused?'var(--emerald)':'';}
+    if(paused){clearInterval(timerTick);timerTick=null;updateClock();}
+    else{updateClock();if(!timerTick)timerTick=setInterval(()=>{updateClock();renderTodayTime()},1000);}
+  }else{clearInterval(timerTick);timerTick=null;const xpEl=document.getElementById('timerXpPreview');if(xpEl)xpEl.textContent='';}
+}
+function updateClock(){
+  if(!D.activeTimer)return;
+  const paused=!!D.activeTimer.pausedAt;
+  const endTs=paused?D.activeTimer.pausedAt:Date.now();
+  const s=Math.max(0,Math.floor((endTs-D.activeTimer.startTs)/1000)-(D.activeTimer.pausedSecs||0));
+  let txt;
+  if(s<60){txt=`${s}с`;}
+  else if(s<3600){txt=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;}
+  else{const h=Math.floor(s/3600),m=Math.floor(s%3600/60);txt=`${h}:${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+  const cl=document.getElementById('timerClock');
+  cl.textContent=txt;cl.style.animationPlayState=paused?'paused':'running';
+  cl.style.opacity=paused?'0.5':'';
+  const xp=Math.floor(s/60);
+  const xpEl=document.getElementById('timerXpPreview');
+  if(xpEl)xpEl.textContent=xp>0?`⚡ ${xp} XP авна`:(paused?'':'⚡ 1 минут болоход XP авна');
+}
+function renderTodayTime(){
+  const td=today(),time={};
+  D.sessions.filter(s=>s.startDate===td).forEach(s=>{
+    const m=Math.floor((s.secs??s.mins*60)/60);
+    if(m>0)time[s.cat]=(time[s.cat]||0)+m;
+  });
+  Object.entries(D.streak).forEach(([date,ids])=>{
+    if(date!==td)return;
+    ids.forEach(id=>{const h=D.habits.find(x=>x.id===id);if(h&&h.mins)time[h.cat]=(time[h.cat]||0)+h.mins});
+  });
+  if(D.activeTimer){const{startTs,pausedAt,pausedSecs=0,cat}=D.activeTimer;const endTs=pausedAt??Date.now();const lm=Math.floor(((endTs-startTs)/1000-pausedSecs)/60);if(lm>0)time[cat]=(time[cat]||0)+lm;}
+  const cats=Object.keys(time).filter(c=>time[c]>0);
+  const total=cats.reduce((s,c)=>s+time[c],0),mx=Math.max(...cats.map(c=>time[c]),1);
+  const el=document.getElementById('todayTimeBars');
+  if(!total){el.innerHTML='<div class="empty" style="padding:8px 0">Өнөөдөр цаг бүртгэгдээгүй байна.</div>';return}
+  el.innerHTML=`${cats.map(c=>`
+    <div class="trow">
+      <div class="trlabel">${catLabel(c)}</div>
+      <div class="trbg"><div class="trfill" style="width:${time[c]/mx*100}%;background:${catColor(c)}"></div></div>
+      <div class="trval">${fmtTime(time[c])}</div>
+    </div>`).join('')}
+    <div class="total-row"><span style="color:var(--t2)">Нийт өнөөдөр</span><span style="color:var(--gold);font-weight:700">${fmtTime(total)}</span></div>`;
+}
+function renderSessions(){
+  const list=D.sessions.filter(s=>s.startDate===today()).slice().reverse();
+  const el=document.getElementById('sessionList');
+  if(!list.length){el.innerHTML='<div class="empty" style="padding:8px 0">Өнөөдөр сесс байхгүй байна.</div>';return}
+  el.innerHTML=list.map(s=>{
+    const t=new Date(s.startTs).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    return`<div class="sitem">
+      <div class="sico">${catIcon(s.cat)}</div>
+      <div class="sinfo">
+        <div class="stitle">${esc(s.title)}</div>
+        <div class="smeta"><span class="sdur">${fmtSecs(s.secs??s.mins*60)}</span><span>${t}</span><span>${catLabel(s.cat)}</span></div>
+      </div>
+      <button class="delbtn" onclick="delSession('${s.id}')">✕</button>
+    </div>`}).join('');
+}
+function delSession(id){D.sessions=D.sessions.filter(x=>x.id!==id);save();renderTodayTime();renderSessions()}
+
+// ── LEVEL REWARDS EDITOR ──────────────────────────────────────────────────────
+function getLvReward(lv){return(D.rewards||{})[lv]||DEF_REWARDS[lv]||''}
+function openLvModal(){
+  (D.rewardLog||[]).forEach(r=>{r.seen=true;});save();updateRwBadge();
+  const log=(D.rewardLog||[]).slice().sort((a,b)=>b.lv-a.lv);
+  let logHtml='';
+  if(log.length){
+    logHtml=`<div style="margin-bottom:18px">
+      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px;letter-spacing:.5px">🎁 АВСАН ШАГНАЛУУД</div>
+      ${log.map(r=>`<div class="rw-earned${r.used?' used':''}">
+        <span class="rw-lv" style="min-width:44px">LV.${r.lv}</span>
+        <span style="flex:1;font-size:12px;color:${r.used?'var(--t2)':'var(--t1)'};${r.used?'text-decoration:line-through;opacity:.5':''}">${esc(r.text)}</span>
+        <span style="font-size:10px;color:var(--t2);margin-right:6px">${r.date||''}</span>
+        <button class="rw-use-btn${r.used?' done':''}" onclick="toggleRewardUsed('${r.id}')">
+          ${r.used?'✓ Хэрэглэсэн':'Хэрэглэх'}
+        </button>
+      </div>`).join('')}
+    </div>
+    <div style="border-top:1px solid var(--border);margin-bottom:14px"></div>
+    <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px;letter-spacing:.5px">✏️ ШАГНАЛ ЗАСАХ</div>`;
+  }
+  let html='';
+  for(let lv=2;lv<=25;lv++){
+    const val=esc((D.rewards||{})[lv]??DEF_REWARDS[lv]??'');
+    html+=`<div class="rw-row">
+      <span class="rw-lv">LV.${lv}</span>
+      <input type="text" class="f" id="rw_${lv}" value="${val}" placeholder="Шагнал оруулна уу...">
+    </div>`;
+  }
+  document.getElementById('lvRewardList').innerHTML=logHtml+html;
+  document.getElementById('lvModal').classList.add('show');
+}
+function closeLvModal(){document.getElementById('lvModal').classList.remove('show')}
+function saveLvRewards(){
+  if(!D.rewards)D.rewards={};
+  for(let lv=2;lv<=25;lv++){
+    const el=document.getElementById('rw_'+lv);if(el)D.rewards[lv]=el.value.trim();
+  }
+  save();closeLvModal();toast('✓','Шагналууд хадгалагдлаа!');
+}
+
+// ── MIND MAP (XMind style · draggable · multi-goal) ──────────────────────────
+const MMP=['#ff6b6b','#4ecdc4','#45b7d1','#ffd93d','#c77dff','#96ceb4','#ff9f43','#54a0ff'];
+let mmDrag=null,mmRaf=null,mmLinkMode=false,mmLinkSrc=null;
+
+function renderMindMap(){
+  const cv=document.getElementById('mmCanvas');
+  if(!cv)return;
+  const W=cv.offsetWidth||640,H=cv.offsetHeight||520;
+  const cx=W/2,cy=H/2;
+  const svg=document.getElementById('mmSvg');
+  const nc=document.getElementById('mmNodes');
+  svg.innerHTML='';nc.innerHTML='';
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+
+  const goals=(D.mindMap?.goals)||[];
+  if(!goals.length){
+    const h=document.createElement('div');h.className='mm-empty';
+    h.innerHTML='<div class="mm-empty-ico">🗺</div><div>+ Шинэ зорилго нэмэх</div>';
+    nc.appendChild(h);return;
+  }
+  // draw goal-to-goal links first (below everything)
+  (D.mindMap.links||[]).forEach(lk=>{
+    const ga=goals.find(g=>g.id===lk.from),gb=goals.find(g=>g.id===lk.to);
+    if(!ga||!gb)return;
+    // positions may not be computed yet; use stored or auto
+    const gia=goals.indexOf(ga),gib=goals.indexOf(gb);
+    function autoPos(g,gi){
+      if(g.x!=null&&g.y!=null)return[g.x,g.y];
+      const c=gi%2,r=Math.floor(gi/2);
+      return goals.length===1?[W/2,H/2]:[W*(c+1)/3,H*(r+1)/(Math.ceil(goals.length/2)+1)];
+    }
+    const[ax,ay]=autoPos(ga,gia),[bx,by]=autoPos(gb,gib);
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    const cp=Math.abs(bx-ax)*0.4;
+    const dir=bx>=ax?1:-1;
+    p.setAttribute('d',`M${ax} ${ay} C${ax+dir*cp} ${ay} ${bx-dir*cp} ${by} ${bx} ${by}`);
+    p.setAttribute('stroke','#a78bfa');p.setAttribute('stroke-width','2');
+    p.setAttribute('fill','none');p.setAttribute('stroke-dasharray','7 4');p.setAttribute('opacity','0.6');
+    p.style.cursor='pointer';p.setAttribute('data-lid',lk.id);
+    p.addEventListener('click',()=>{if(confirm('Холболтыг устгах уу?')){D.mindMap.links=D.mindMap.links.filter(l=>l.id!==lk.id);save();renderMindMap();}});
+    svg.appendChild(p);
+  });
+
+  goals.forEach((goal,gi)=>{
+    let autoGx,autoGy;
+    if(goals.length===1){autoGx=W/2;autoGy=H/2;}
+    else{const c=gi%2,r=Math.floor(gi/2);autoGx=W*(c+1)/3;autoGy=H*(r+1)/(Math.ceil(goals.length/2)+1);}
+    const gx=goal.x??autoGx,gy=goal.y??autoGy;
+    goal._x=gx;goal._y=gy;
+    const isLinkSrc=mmLinkMode&&mmLinkSrc===goal.id;
+    const gd=document.createElement('div');
+    gd.className='mm-root';
+    const doneStyle=goal.done?';background:linear-gradient(135deg,#92400e,#d97706);box-shadow:0 4px 20px rgba(217,119,6,.5);opacity:0.85':'';
+    gd.style.cssText=`left:${gx}px;top:${gy}px;touch-action:none${doneStyle}${isLinkSrc?';outline:3px solid #a78bfa;outline-offset:3px':''}${mmLinkMode?';cursor:crosshair':''}`;
+    const doneLabel=goal.done?`<span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.4);pointer-events:none">✓</span>`:'';
+    const textStyle=goal.done?'margin-bottom:7px;min-width:80px;text-decoration:line-through;opacity:0.85':'margin-bottom:7px;min-width:80px';
+    gd.innerHTML=`${doneLabel}<div ondblclick="mmEditText('${goal.id}',this)" style="${textStyle}">${esc(goal.text)}</div>
+      <div style="display:flex;justify-content:center;gap:5px">
+        <button class="mm-act" style="background:rgba(255,255,255,.22);color:#fff;font-size:11px" onpointerdown="event.stopPropagation()" onclick="addMMMain('${goal.id}')">+ Сэдэв</button>
+        <button class="mm-act" style="background:rgba(239,68,68,.3);color:#fca5a5;font-size:11px" onpointerdown="event.stopPropagation()" onclick="delMMGoal('${goal.id}')">✕</button>
+      </div>`;
+    gd.addEventListener('pointerdown',e=>{
+      if(mmLinkMode){e.stopPropagation();mmLinkClick(goal.id);return;}
+      mmDown(e,goal.id,'goal',null);
+    });
+    nc.appendChild(gd);
+    const right=goal.children.filter(c=>c.side==='right');
+    const left=goal.children.filter(c=>c.side==='left');
+    mmSide(svg,nc,goal,right,gx,gy,1);
+    mmSide(svg,nc,goal,left,gx,gy,-1);
+  });
+}
+
+function mmTreeH(node,lv){
+  const base=lv===1?64:48;
+  if(!node.children?.length)return base;
+  return Math.max(base,node.children.reduce((s,c)=>s+mmTreeH(c,lv+1),0)+node.children.length*8);
+}
+
+function mmSide(svg,nc,goal,nodes,gx,gy,dir){
+  if(!nodes.length)return;
+  const GAP=14,heights=nodes.map(n=>mmTreeH(n,1));
+  const total=heights.reduce((s,h)=>s+h,0)+(nodes.length-1)*GAP;
+  let autoY=gy-total/2;
+  nodes.forEach((node,i)=>{
+    const h=heights[i],autoNy=autoY+h/2,autoNx=gx+dir*200;
+    const nx=node.dx!=null?gx+node.dx:autoNx;
+    const ny=node.dy!=null?gy+node.dy:autoNy;
+    node._x=nx;node._y=ny;
+    const col=MMP[node.ci%MMP.length];
+    mmBez(svg,gx,gy,nx,ny,col,2.5,dir,0.55);
+    const md=document.createElement('div');
+    md.className='mm-main';
+    md.style.cssText=`left:${nx}px;top:${ny}px;background:${col}22;border-color:${col};color:${col};touch-action:none`;
+    md.innerHTML=`<div ondblclick="mmEditText('${node.id}',this)">${esc(node.text)}</div>
+      <div class="mm-actions">
+        <button class="mm-act" style="background:${col};color:#000" onpointerdown="event.stopPropagation()" onclick="mmAddSub('${node.id}')">+</button>
+        <button class="mm-act" style="background:transparent;color:${col};opacity:.55;font-weight:400" onpointerdown="event.stopPropagation()" onclick="mmDel('${node.id}','${goal.id}',null)">✕</button>
+      </div>`;
+    md.addEventListener('pointerdown',e=>mmDown(e,node.id,'main',goal.id));
+    nc.appendChild(md);
+    const subs=node.children||[];
+    if(subs.length){
+      const SGAP=8,subH=subs.map(s=>mmTreeH(s,2));
+      const subTotal=subH.reduce((s,h)=>s+h,0)+(subs.length-1)*SGAP;
+      let sy=ny-subTotal/2;
+      subs.forEach((sub,j)=>{
+        const sh=subH[j],snx=nx+dir*162,sny=sy+sh/2;
+        mmBez(svg,nx,ny,snx,sny,col,1.5,dir,0.42);
+        const sd=document.createElement('div');
+        sd.className='mm-sub';
+        sd.style.cssText=`left:${snx}px;top:${sny}px;color:${col};border-color:${col}`;
+        sd.innerHTML=`<div ondblclick="mmEditText('${sub.id}',this)">${esc(sub.text)}</div>
+          <div class="mm-sub-actions"><button style="background:none;border:none;color:${col};opacity:.4;font-size:10px;cursor:pointer;padding:0 2px" onclick="mmDel('${sub.id}','${goal.id}','${node.id}')">✕</button></div>`;
+        nc.appendChild(sd);sy+=sh+SGAP;
+      });
+    }
+    autoY+=h+GAP;
+  });
+}
+
+function mmBez(svg,x1,y1,x2,y2,col,w,dir,bend){
+  const cp=Math.abs(x2-x1)*bend;
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',`M${x1} ${y1} C${x1+dir*cp} ${y1} ${x2-dir*cp} ${y2} ${x2} ${y2}`);
+  p.setAttribute('stroke',col);p.setAttribute('stroke-width',w);
+  p.setAttribute('fill','none');p.setAttribute('opacity','0.75');
+  svg.appendChild(p);
+}
+
+function mmDown(e,id,type,goalId){
+  if(e.button!==undefined&&e.button!==0)return;
+  e.preventDefault();e.stopPropagation();
+  const cv=document.getElementById('mmCanvas'),rect=cv.getBoundingClientRect();
+  let origX,origY;
+  if(type==='goal'){
+    const g=D.mindMap.goals.find(g=>g.id===id);
+    const gi=D.mindMap.goals.indexOf(g),W=cv.offsetWidth,H=cv.offsetHeight;
+    const c=gi%2,r=Math.floor(gi/2);
+    const aGx=D.mindMap.goals.length===1?W/2:W*(c+1)/3;
+    const aGy=D.mindMap.goals.length===1?H/2:H*(r+1)/(Math.ceil(D.mindMap.goals.length/2)+1);
+    origX=g.x??aGx;origY=g.y??aGy;g.x=origX;g.y=origY;
+  }else{
+    const g=D.mindMap.goals.find(g=>g.id===goalId);
+    const n=g?.children.find(c=>c.id===id);if(!g||!n)return;
+    const gx=g._x??g.x??cv.offsetWidth/2,gy=g._y??g.y??cv.offsetHeight/2;
+    origX=n._x??(n.dx!=null?gx+n.dx:gx+200);
+    origY=n._y??(n.dy!=null?gy+n.dy:gy);
+    n.dx=origX-gx;n.dy=origY-gy;
+  }
+  mmDrag={id,type,goalId,smx:e.clientX-rect.left,smy:e.clientY-rect.top,ox:origX,oy:origY};
+  cv.classList.add('dragging');
+  cv.setPointerCapture&&e.pointerId&&cv.setPointerCapture(e.pointerId);
+  document.addEventListener('pointermove',mmMove);
+  document.addEventListener('pointerup',mmUp);
+}
+
+function mmMove(e){
+  if(!mmDrag)return;
+  const cv=document.getElementById('mmCanvas'),rect=cv.getBoundingClientRect();
+  const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  const nx=mmDrag.ox+(mx-mmDrag.smx),ny=mmDrag.oy+(my-mmDrag.smy);
+  if(mmDrag.type==='goal'){
+    const g=D.mindMap.goals.find(g=>g.id===mmDrag.id);if(g){g.x=nx;g.y=ny;}
+  }else{
+    const g=D.mindMap.goals.find(g=>g.id===mmDrag.goalId);
+    const n=g?.children.find(c=>c.id===mmDrag.id);
+    if(g&&n){n.dx=nx-(g._x??g.x??cv.offsetWidth/2);n.dy=ny-(g._y??g.y??cv.offsetHeight/2);}
+  }
+  if(mmRaf)cancelAnimationFrame(mmRaf);
+  mmRaf=requestAnimationFrame(()=>renderMindMap());
+}
+
+function mmUp(){
+  if(mmDrag){save();document.getElementById('mmCanvas')?.classList.remove('dragging');}
+  mmDrag=null;
+  document.removeEventListener('pointermove',mmMove);
+  document.removeEventListener('pointerup',mmUp);
+}
+
+function mmEditText(id,el){
+  const orig=el.textContent;
+  const inp=document.createElement('input');
+  inp.type='text';inp.value=orig;
+  inp.style.cssText='background:transparent;border:none;border-bottom:1px solid currentColor;color:inherit;font:inherit;text-align:center;width:100%;outline:none;padding:2px 0;display:block;min-width:60px';
+  el.replaceWith(inp);inp.focus();inp.select();
+  const commit=()=>{mmSetText(id,inp.value.trim()||orig);renderMindMap();};
+  inp.onblur=commit;
+  inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit();}if(e.key==='Escape')renderMindMap();};
+}
+
+function mmSetText(id,text){
+  for(const g of D.mindMap.goals||[]){
+    if(g.id===id){g.text=text;save();return;}
+    function walk(nodes){for(const n of nodes){if(n.id===id){n.text=text;return true;}if(n.children&&walk(n.children))return true;}return false;}
+    if(walk(g.children)){save();return;}
+  }
+}
+
+function addMMGoal(){
+  const cv=document.getElementById('mmCanvas');
+  const W=cv?.offsetWidth||640,H=cv?.offsetHeight||520;
+  D.mindMap.goals.push({id:'g'+Date.now(),text:'Шинэ зорилго',
+    x:W*0.2+Math.random()*W*0.6,y:H*0.2+Math.random()*H*0.6,children:[]});
+  save();renderMindMap();
+}
+
+function delMMGoal(id){
+  if(!confirm('Энэ зорилгыг устгах уу?'))return;
+  D.mindMap.goals=D.mindMap.goals.filter(g=>g.id!==id);save();renderMindMap();
+}
+
+function addMMMain(goalId){
+  const goal=D.mindMap.goals.find(g=>g.id===goalId);if(!goal)return;
+  const ch=goal.children,rc=ch.filter(c=>c.side==='right').length,lc=ch.filter(c=>c.side==='left').length;
+  ch.push({id:'mm'+Date.now(),text:'Гол сэдэв',side:rc<=lc?'right':'left',ci:ch.length,dx:null,dy:null,children:[]});
+  save();renderMindMap();
+}
+
+function mmAddSub(parentId){
+  function walk(nodes){for(const n of nodes){if(n.id===parentId){n.children.push({id:'ms'+Date.now(),text:'Дэд сэдэв',children:[]});return true;}if(n.children&&walk(n.children))return true;}return false;}
+  for(const g of D.mindMap.goals||[])if(walk(g.children))break;
+  save();renderMindMap();
+}
+
+function mmDel(id,goalId,parentId){
+  const goal=D.mindMap.goals.find(g=>g.id===goalId);if(!goal)return;
+  if(parentId){
+    function walk(nodes){for(const n of nodes){if(n.id===parentId){n.children=n.children.filter(c=>c.id!==id);return true;}if(n.children&&walk(n.children))return true;}return false;}
+    walk(goal.children);
+  }else{goal.children=goal.children.filter(c=>c.id!==id);}
+  save();renderMindMap();
+}
+
+function clearMM(){
+  if(!confirm('Mind Map-г цэвэрлэх үү?'))return;
+  D.mindMap={goals:[],links:[]};save();renderMindMap();
+}
+
+function toggleMMLink(){
+  mmLinkMode=!mmLinkMode;mmLinkSrc=null;
+  const btn=document.getElementById('mmLinkBtn');
+  if(btn){btn.style.background=mmLinkMode?'var(--purple)':'';btn.style.color=mmLinkMode?'#fff':'';}
+  renderMindMap();
+}
+
+function mmLinkClick(goalId){
+  if(!mmLinkSrc){mmLinkSrc=goalId;renderMindMap();return;}
+  if(mmLinkSrc===goalId){mmLinkSrc=null;renderMindMap();return;}
+  // check if link already exists
+  if(!(D.mindMap.links||[]).find(l=>(l.from===mmLinkSrc&&l.to===goalId)||(l.from===goalId&&l.to===mmLinkSrc))){
+    if(!D.mindMap.links)D.mindMap.links=[];
+    D.mindMap.links.push({id:'lk'+Date.now(),from:mmLinkSrc,to:goalId});
+    save();
+  }
+  mmLinkSrc=null;mmLinkMode=false;
+  const btn=document.getElementById('mmLinkBtn');
+  if(btn){btn.style.background='';btn.style.color='';}
+  renderMindMap();
+}
+
+// ── PINNED GOALS ──────────────────────────────────────────────────────────────
+function togglePin(id){
+  if(!D.pinnedIds)D.pinnedIds=[];
+  const idx=D.pinnedIds.indexOf(id);
+  if(idx===-1)D.pinnedIds.push(id);else D.pinnedIds.splice(idx,1);
+  save();renderQuests();renderPinned();
+}
+function renderPinned(){
+  if(!D.pinnedIds)D.pinnedIds=[];
+  const pinned=D.quests.filter(q=>D.pinnedIds.includes(q.id));
+  const sec=document.getElementById('pinnedSection');
+  const el=document.getElementById('pinnedList');
+  if(!pinned.length){sec.style.display='none';return}
+  sec.style.display='block';
+  el.innerHTML=pinned.map(q=>`
+    <div class="pq-row">
+      <div class="pq-circ${q.done?' done':''}" onclick="toggleQ('${q.id}');renderPinned()">${q.done?'✓':''}</div>
+      <span class="pq-lbl${q.done?' done':''}">${esc(q.title)}</span>
+      <span class="pq-xp">+${q.xp}XP</span>
+      <span class="tag t${q.cat}" style="font-size:10px">${CI[q.cat]}</span>
+      <button class="pin-btn on" onclick="togglePin('${q.id}')" title="Буцаах">📌</button>
+    </div>`).join('');
+}
+
+// ── MONTHLY ───────────────────────────────────────────────────────────────────
+let curM=(()=>{const n=new Date();return{y:n.getFullYear(),m:n.getMonth()+1}})();
+function mPfx(y,m){return`${y}-${String(m).padStart(2,'0')}`}
+function calcMonthly(y,m){
+  const pfx=mPfx(y,m);
+  const xp=(D.xpLog||[]).filter(e=>e.d.startsWith(pfx)).reduce((s,e)=>s+e.a,0);
+  const quests=D.quests.filter(q=>q.done&&q.ca&&q.ca.startsWith(pfx)).length;
+  const time={};let habitsTotal=0;
+  Object.entries(D.streak).forEach(([date,ids])=>{
+    if(!date.startsWith(pfx))return;
+    ids.forEach(id=>{const h=D.habits.find(x=>x.id===id);if(h){habitsTotal++;if(h.mins)time[h.cat]=(time[h.cat]||0)+h.mins}});
+  });
+  (D.sessions||[]).forEach(s=>{
+    const d=s.startDate||(s.startTs?new Date(s.startTs).toISOString().split('T')[0]:'');
+    if(d.startsWith(pfx))time[s.cat]=(time[s.cat]||0)+Math.round((s.secs??s.mins*60)/60);
+  });
+  return{xp,quests,habitsTotal,time}
+}
+function fmtTime(mins){if(!mins)return'—';const h=Math.floor(mins/60),m=mins%60;return h>0?(m>0?`${h}ц ${m}мин`:`${h}ц`):`${m}мин`}
+function fmtSecs(s){if(!s)return'—';if(s<60)return`${s}с`;const m=Math.floor(s/60),r=s%60;if(s<3600)return r>0?`${m}мин ${r}с`:`${m}мин`;const h=Math.floor(m/60),rm=m%60;return rm>0?`${h}ц ${rm}мин`:`${h}ц`;}
+// ── CALENDAR ──────────────────────────────────────────────────────────────────
+let curCal=(()=>{const n=new Date();return{y:n.getFullYear(),m:n.getMonth()+1}})();
+let curCalDate=null;
+const DOW_MN=['Да','Мя','Лх','Пү','Ба','Бя','Ня'];
+const MN_LBL=['Нэгдүгээр','Хоёрдугаар','Гуравдугаар','Дөрөвдүгээр','Тавдугаар','Зургадугаар','Долдугаар','Наймдугаар','Есдүгээр','Аравдугаар','Арван нэгдүгээр','Арван хоёрдугаар'];
+
+function navCal(btn){
+  document.querySelectorAll('.navlink').forEach(e=>e.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('homeContent').style.display='none';
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
+  document.getElementById('tab-calendar').classList.add('on');
+  renderCalendar();
+}
+
+function renderCalendar(){
+  const{y,m}=curCal;
+  document.getElementById('calLabel').textContent=`${MN_LBL[m-1]} сар, ${y}`;
+  const first=new Date(y,m-1,1),last=new Date(y,m,0);
+  const startDow=(first.getDay()+6)%7,daysInMo=last.getDate();
+  const td=today();const cells=[];
+  for(let i=0;i<startDow;i++){const d=new Date(y,m-1,-startDow+i+1);cells.push({date:d.toISOString().split('T')[0],day:d.getDate(),other:true});}
+  for(let d=1;d<=daysInMo;d++){const date=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;cells.push({date,day:d,other:false});}
+  while(cells.length%7!==0){const d=new Date(y,m,cells.length-startDow-daysInMo+1);cells.push({date:d.toISOString().split('T')[0],day:d.getDate(),other:true});}
+  const el=document.getElementById('calGrid');
+  el.innerHTML=`<div class="cal-dow">${DOW_MN.map(d=>`<div class="cal-dow-cell">${d}</div>`).join('')}</div>
+  <div class="cal-grid">${cells.map(c=>{
+    const habits=(D.streak[c.date]||[]).map(id=>D.habits.find(h=>h.id===id)).filter(Boolean);
+    const sessions=(D.sessions||[]).filter(s=>(s.startDate||'')===c.date);
+    const mins=sessions.reduce((s,x)=>s+Math.floor((x.secs??x.mins*60)/60),0);
+    const xpDay=(D.xpLog||[]).filter(e=>e.d===c.date).reduce((s,e)=>s+e.a,0);
+    const hasNote=!c.other&&(D.calNotes[c.date]||[]).length>0;
+    const isT=c.date===td,hasAct=!c.other&&(habits.length>0||mins>0);
+    const dots=habits.slice(0,6).map(h=>`<div class="cal-dot" style="background:${catColor(h.cat)}"></div>`).join('');
+    return`<div class="cal-day${c.other?' other-month':''}${isT?' today':''}${hasAct?' has-act':''}${hasNote?' has-note':''}" onclick="calClick('${c.date}')">
+      <div class="cal-day-num">${c.day}</div>
+      ${dots?`<div class="cal-dots">${dots}</div>`:''}
+      ${mins>0?`<div class="cal-time">${fmtTime(mins)}</div>`:''}
+      ${xpDay>0?`<div class="cal-xp">+${xpDay}xp</div>`:''}
+    </div>`;
+  }).join('')}</div>`;
+  if(curCalDate)calClick(curCalDate);
+  else document.getElementById('calDetail').style.display='none';
+}
+
+function calClick(date){
+  curCalDate=date;
+  const det=document.getElementById('calDetail');
+  det.style.display='block';
+  // header
+  const d=new Date(date+'T00:00:00');
+  document.getElementById('calDetailDate').innerHTML=`📅 ${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+  // notes
+  renderCalNotes(date);
+  // activity
+  const habits=(D.streak[date]||[]).map(id=>D.habits.find(h=>h.id===id)).filter(Boolean);
+  const sessions=(D.sessions||[]).filter(s=>(s.startDate||'')===date);
+  const quests=D.quests.filter(q=>q.done&&q.ca===date);
+  let html='';
+  if(quests.length){html+=`<div class="cal-section-title">⚔️ Даалгавар</div>`;html+=quests.map(q=>`<div class="item"><div class="circle done" style="width:18px;height:18px;font-size:9px;flex-shrink:0">✓</div><div class="iinfo"><div class="ititle done" style="font-size:13px">${esc(q.title)}</div></div></div>`).join('');}
+  if(habits.length){html+=`<div class="cal-section-title">🔁 Зуршил</div>`;html+=habits.map(h=>`<div class="item"><div class="sq done" style="width:18px;height:18px;font-size:10px;flex-shrink:0">✓</div><div class="iinfo"><div class="ititle" style="font-size:13px">${esc(h.title)}</div></div></div>`).join('');}
+  if(sessions.length){html+=`<div class="cal-section-title">⏱ Цаг</div>`;html+=sessions.map(s=>`<div class="sitem"><div class="sico" style="font-size:15px">${catIcon(s.cat)}</div><div class="sinfo"><div class="stitle">${esc(s.title)}</div><div class="smeta"><span class="sdur">${fmtSecs(s.secs??s.mins*60)}</span><span>${catLabel(s.cat)}</span></div></div></div>`).join('');}
+  document.getElementById('calDetailContent').innerHTML=html;
+  // focus note input
+  const ni=document.getElementById('calNoteInput');if(ni)ni.focus();
+}
+
+function renderCalNotes(date){
+  const notes=D.calNotes[date]||[];
+  const el=document.getElementById('calNotesList');if(!el)return;
+  el.innerHTML=notes.length?notes.map(n=>`
+    <div class="cal-note-item">
+      <span class="cal-note-text">${esc(n.text)}</span>
+      <button class="cal-note-del" onclick="delCalNote('${date}','${n.id}')">✕</button>
+    </div>`).join(''):'';
+}
+
+function addCalNote(){
+  const inp=document.getElementById('calNoteInput');
+  const text=inp?.value.trim();if(!text||!curCalDate)return;
+  if(!D.calNotes)D.calNotes={};
+  if(!D.calNotes[curCalDate])D.calNotes[curCalDate]=[];
+  D.calNotes[curCalDate].push({id:'n'+Date.now(),text});
+  inp.value='';save();renderCalNotes(curCalDate);renderCalendar();
+}
+
+function delCalNote(date,id){
+  if(!D.calNotes[date])return;
+  D.calNotes[date]=D.calNotes[date].filter(n=>n.id!==id);
+  if(!D.calNotes[date].length)delete D.calNotes[date];
+  save();renderCalNotes(date);renderCalendar();
+}
+
+function calPrev(){curCal=curCal.m===1?{y:curCal.y-1,m:12}:{y:curCal.y,m:curCal.m-1};curCalDate=null;renderCalendar();}
+function calNext(){curCal=curCal.m===12?{y:curCal.y+1,m:1}:{y:curCal.y,m:curCal.m+1};curCalDate=null;renderCalendar();}
+function calPrevYear(){curCal={y:curCal.y-1,m:curCal.m};curCalDate=null;renderCalendar();}
+function calNextYear(){curCal={y:curCal.y+1,m:curCal.m};curCalDate=null;renderCalendar();}
+
+function renderMonthly(){
+  const n=new Date(),isCur=curM.y===n.getFullYear()&&curM.m===n.getMonth()+1;
+  document.getElementById('mlabel').textContent=isCur?`${curM.m}-р сар`:`${curM.y}/${curM.m}`;
+  const ms=calcMonthly(curM.y,curM.m);
+  document.getElementById('msgrid').innerHTML=`
+    <div class="ms"><div class="msv">${ms.xp}</div><div class="msl">Сарын XP</div></div>
+    <div class="ms"><div class="msv">${ms.quests}</div><div class="msl">Дуусгасан даалгавар</div></div>
+    <div class="ms"><div class="msv">${ms.habitsTotal}</div><div class="msl">Зуршил гүйцэтгэл</div></div>
+    <div class="ms"><div class="msv">${globalStreak()}🔥</div><div class="msl">Одоогийн Streak</div></div>`;
+  const t=ms.time,tCats=Object.keys(t).filter(c=>t[c]>0),mx=Math.max(...tCats.map(c=>t[c]),1),hasT=tCats.length>0;
+  const tTotal=tCats.reduce((s,c)=>s+t[c],0);
+  document.getElementById('timegrid').innerHTML=hasT?`
+    ${tCats.map(c=>`
+    <div class="trow">
+      <div class="trlabel">${catLabel(c)}</div>
+      <div class="trbg"><div class="trfill" style="width:${t[c]/mx*100}%;background:${catColor(c)}"></div></div>
+      <div class="trval">${fmtTime(t[c])}</div>
+    </div>`).join('')}
+    <div class="total-row"><span style="color:var(--t2)">Нийт сард</span><span style="color:var(--gold);font-weight:700">${fmtTime(tTotal)}</span></div>`
+    :'<div style="font-size:12px;color:var(--t2);font-style:italic;padding:4px 0">Тухайн сард цаг бүртгэгдээгүй байна.</div>';
+}
+function prevMonth(){curM=curM.m===1?{y:curM.y-1,m:12}:{y:curM.y,m:curM.m-1};renderMonthly()}
+function nextMonth(){const n=new Date();if(curM.y>=n.getFullYear()&&curM.m>=n.getMonth()+1)return;curM=curM.m===12?{y:curM.y+1,m:1}:{y:curM.y,m:curM.m+1};renderMonthly()}
+
+// ── CUSTOM ACHIEVEMENTS ───────────────────────────────────────────────────────
+function toggleCVal(){document.getElementById('cval').style.display=document.getElementById('ctype').value==='manual'?'none':'block'}
+function addCustomAch(){
+  const name=document.getElementById('cname').value.trim();if(!name)return;
+  D.customAchs.push({id:'ca'+Date.now(),ico:document.getElementById('cico').value.trim()||'🎯',
+    name,desc:document.getElementById('cdesc').value.trim(),
+    type:document.getElementById('ctype').value,val:parseInt(document.getElementById('cval').value)||100,earned:false});
+  document.getElementById('cname').value='';document.getElementById('cdesc').value='';document.getElementById('cico').value='🎯';
+  save();renderCustomAchs();checkCustomAchs();
+}
+function delCustomAch(id){D.customAchs=D.customAchs.filter(x=>x.id!==id);save();renderCustomAchs()}
+function unlockCustomAch(id){const a=D.customAchs.find(x=>x.id===id);if(!a||a.earned)return;a.earned=true;save();toast(`🎖️ ${a.name}`,'Хувийн амжилт!');renderCustomAchs();renderStats()}
+function checkCustomAchs(){
+  const qd=D.stats.qDone,sk=globalStreak(),lv=D.player.level,tx=D.player.totalXp;let ch=false;
+  D.customAchs.forEach(a=>{if(a.earned||a.type==='manual')return;
+    const m=(a.type==='xp'&&tx>=a.val)||(a.type==='quests'&&qd>=a.val)||(a.type==='streak'&&sk>=a.val)||(a.type==='level'&&lv>=a.val);
+    if(m){a.earned=true;ch=true;toast(`🎖️ ${a.name}`,'Хувийн амжилт!')}
+  });if(ch){save();renderCustomAchs();renderStats()}
+}
+function renderCustomAchs(){
+  const el=document.getElementById('clist');
+  if(!D.customAchs.length){el.innerHTML='<div class="empty">Хувийн амжилт байхгүй. + товч дарна уу.</div>';return}
+  const cL={manual:'✋ Гараар',xp:'✨ XP≥',quests:'⚔️ ≥',streak:'🔥 ≥',level:'⭐ Lv≥'};
+  el.innerHTML=D.customAchs.map(a=>{
+    let btn=a.type==='manual'&&!a.earned?`<button class="ubtn" onclick="unlockCustomAch('${a.id}')">🔓 Нээх</button>`
+      :a.earned?`<span class="ubtn done">✓</span>`:`<span class="ubtn auto">🤖</span>`;
+    return`<div class="cach">
+      <div class="cach-ico">${a.ico}</div>
+      <div class="cach-info">
+        <div class="cach-name${a.earned?' done':''}">${esc(a.name)}</div>
+        <div class="cach-sub">${a.desc?esc(a.desc)+'  ':''}<span class="cach-cond">${cL[a.type]||''}${a.type!=='manual'?a.val:''}</span></div>
+      </div>${btn}
+      <button class="delbtn" onclick="delCustomAch('${a.id}')">✕</button>
+    </div>`}).join('');
+}
+
+// ── PREDEFINED ACHIEVEMENTS ───────────────────────────────────────────────────
+function checkAch(){
+  const e=D.earned,qd=D.stats.qDone,sk=globalStreak(),lv=D.player.level,news=[];
+  const chk=(id,c)=>{if(!e.includes(id)&&c)news.push(id)};
+  chk('first_quest',qd>=1);chk('quest_5',qd>=5);chk('quest_10',qd>=10);chk('quest_25',qd>=25);
+  chk('streak_3',sk>=3);chk('streak_7',sk>=7);chk('streak_30',sk>=30);
+  chk('level_5',lv>=5);chk('level_10',lv>=10);chk('level_20',lv>=20);
+  chk('first_habit',D.habits.length>0);
+  if(D.habits.length>0&&D.habits.every(h=>habitDoneToday(h.id)))chk('daily_all',true);
+  news.forEach(id=>{D.earned.push(id);const a=ACHS.find(x=>x.id===id);if(a)toast(`🏆 ${a.name}`,a.desc)});
+  if(news.length)save();checkCustomAchs();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  const p=D.player;
+  document.getElementById('pname').textContent=p.name;
+  const avEl=document.getElementById('avatar');
+  if(p.avatarImg){avEl.innerHTML=`<img class="avatar-img" src="${p.avatarImg}">`;} else{avEl.innerHTML='';avEl.textContent=p.avatar||'⚔️';}
+  document.getElementById('pbio').textContent=p.bio||'';
+  const _lvb=document.getElementById('lvbadge');
+  if(_lvb.firstChild&&_lvb.firstChild.nodeType===3)_lvb.firstChild.textContent=`LV. ${p.level}`;
+  else _lvb.insertBefore(document.createTextNode(`LV. ${p.level}`),_lvb.firstChild);
+  updateRwBadge();
+  const pr=xpProg();
+  document.getElementById('xptext').textContent=`${pr.cur} / ${pr.need} XP`;
+  document.getElementById('txptext').textContent=`∑ ${p.totalXp} XP`;
+  document.getElementById('xpfill').style.width=pr.pct+'%';
+  fillCatSelects();
+  renderMQ();renderStreak();renderQuests();renderHabits();renderSkills();
+  renderAchs();renderCustomAchs();renderStats();renderPinned();
+  applyTimerUI();renderTodayTime();renderSessions();
+  updateFriendReqBadge();
+}
+function renderMQ(){
+  const goals=D.player.mainQuests||[];
+  const el=document.getElementById('mqGoals');if(!el)return;
+  if(!goals.length){el.innerHTML='<div style="font-size:11px;color:rgba(255,255,255,.25);padding:3px 4px;font-style:italic">Зорилго байхгүй байна</div>';return;}
+  el.innerHTML=goals.map(g=>`
+    <div class="mq-goal-item">
+      <div class="mq-goal-circ${g.done?' done':''}" onclick="toggleMQ('${g.id}')">${g.done?'✓':''}</div>
+      <span class="mq-goal-text${g.done?' done':''}" title="${esc(g.text)}">${esc(g.text)}</span>
+      <button class="mq-goal-del" onclick="delMQ('${g.id}')">✕</button>
+    </div>`).join('');
+}
+function addMQ(){
+  const inp=document.getElementById('mqAddInput');
+  const text=inp?.value.trim();if(!text)return;
+  if(!D.player.mainQuests)D.player.mainQuests=[];
+  const mmGoalId='g'+Date.now();
+  D.player.mainQuests.push({id:'mq'+(Date.now()+1),text,done:false,mmGoalId});
+  if(!D.mindMap)D.mindMap={goals:[],links:[]};
+  if(!D.mindMap.goals)D.mindMap.goals=[];
+  D.mindMap.goals.push({id:mmGoalId,text,x:null,y:null,done:false,children:[]});
+  inp.value='';save();renderMQ();
+  if(document.getElementById('tab-mindmap')?.classList.contains('on'))renderMindMap();
+}
+function toggleMQ(id){
+  const g=(D.player.mainQuests||[]).find(g=>g.id===id);if(!g)return;
+  g.done=!g.done;
+  if(g.mmGoalId){const mg=(D.mindMap.goals||[]).find(m=>m.id===g.mmGoalId);if(mg)mg.done=g.done;}
+  save();renderMQ();
+  if(document.getElementById('tab-mindmap')?.classList.contains('on'))renderMindMap();
+}
+function delMQ(id){
+  // зөвхөн жагсаалтаас хасна, mind map-д хэвээрээ байна
+  D.player.mainQuests=(D.player.mainQuests||[]).filter(g=>g.id!==id);
+  save();renderMQ();
+}
+function renderQuests(){
+  const el=document.getElementById('qlist');
+  if(!D.quests.length){el.innerHTML='<div class="empty">Даалгавар байхгүй. + товч дарна уу.</div>';return}
+  el.innerHTML=D.quests.map(q=>{
+    const pinned=(D.pinnedIds||[]).includes(q.id);
+    return`<div class="item">
+      <div class="circle${q.done?' done':''}" onclick="toggleQ('${q.id}')">${q.done?'✓':''}</div>
+      <div class="iinfo">
+        <div class="ititle${q.done?' done':''}">${esc(q.title)}</div>
+        <div class="imeta">
+          <span class="tag txp">+${q.xp} XP</span>
+          <span class="tag t${q.cat}">${CL[q.cat]||q.cat}</span>
+          ${q.ca?`<span class="tag" style="background:rgba(139,148,158,.08);color:var(--t2)">${q.ca}</span>`:''}
+        </div>
+      </div>
+      <button class="pin-btn${pinned?' on':''}" onclick="togglePin('${q.id}')" title="Нүүр хуудсанд тогших">📌</button>
+      <button class="delbtn" onclick="delQ('${q.id}')">✕</button>
+    </div>`}).join('');
+}
+function renderHabits(){
+  const el=document.getElementById('hlist');
+  if(!D.habits.length){el.innerHTML='<div class="empty">Зуршил байхгүй. + товч дарна уу.</div>';return}
+  el.innerHTML=D.habits.map(h=>{
+    const done=habitDoneToday(h.id),sk=habitStreak(h.id);
+    return`<div class="item">
+      <div class="sq${done?' done':''}" onclick="toggleH('${h.id}')">${done?'✓':''}</div>
+      <div class="iinfo">
+        <div class="ititle${done?' done':''}">${esc(h.title)}</div>
+        <div class="imeta">
+          <span class="tag txp">+${h.xp} XP</span>
+          <span class="tag t${h.cat}">${CL[h.cat]||h.cat}</span>
+          ${h.mins?`<span class="tag ttm">⏱${h.mins}мин</span>`:''}
+          ${sk>0?`<span class="streak">🔥 ${sk} өдөр</span>`:''}
+        </div>
+      </div>
+      <button class="delbtn" onclick="delH('${h.id}')">✕</button>
+    </div>`}).join('');
+}
+function renderSkills(){
+  const SKX=200;
+  [{id:'mind',lv:'mindlv',bar:'mindbar'},{id:'body',lv:'bodylv',bar:'bodybar'},{id:'disc',lv:'disclv',bar:'discbar'}]
+  .forEach(({id,lv,bar})=>{
+    const x=D.skills[id],l=Math.floor(x/SKX)+1,pct=(x%SKX)/SKX*100;
+    document.getElementById(lv).textContent=`Lv. ${l} · ${x} XP`;
+    document.getElementById(bar).style.width=pct+'%';
+  });
+}
+function renderAchs(){
+  document.getElementById('achgrid').innerHTML=ACHS.map(a=>{
+    const e=D.earned.includes(a.id);
+    return`<div class="ach ${e?'earned':'locked'}"><div class="achico">${a.ico}</div><div class="achn">${a.name}</div><div class="achd">${a.desc}</div></div>`}).join('');
+}
+function renderStats(){
+  document.getElementById('stlv').textContent=D.player.level;
+  document.getElementById('stxp').textContent=D.player.totalXp;
+  document.getElementById('stq').textContent=D.stats.qDone;
+  document.getElementById('stsk').textContent=globalStreak();
+  document.getElementById('sth').textContent=D.stats.hDone;
+  document.getElementById('stac').textContent=D.earned.length+D.customAchs.filter(a=>a.earned).length;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function addQuest(){
+  const t=document.getElementById('qtitle').value.trim();if(!t)return;
+  D.quests.push({id:'q'+Date.now(),title:t,cat:document.getElementById('qcat').value,
+    xp:Math.min(500,Math.max(10,parseInt(document.getElementById('qxp').value)||50)),done:false});
+  document.getElementById('qtitle').value='';save();renderQuests();checkAch();
+}
+function toggleQ(id){
+  const q=D.quests.find(x=>x.id===id);if(!q||q.done)return;
+  q.done=true;q.ca=today();D.stats.qDone++;
+  toast(`+${q.xp} XP`,`"${q.title}" дуусгалаа!`);giveXp(q.xp,q.cat);checkAch();
+}
+function delQ(id){D.quests=D.quests.filter(x=>x.id!==id);save();renderQuests()}
+function addHabit(){
+  const t=document.getElementById('htitle').value.trim();if(!t)return;
+  D.habits.push({id:'h'+Date.now(),title:t,cat:document.getElementById('hcat').value,
+    xp:Math.min(100,Math.max(5,parseInt(document.getElementById('hxp').value)||20)),
+    mins:Math.min(480,Math.max(0,parseInt(document.getElementById('hmins').value)||0))});
+  document.getElementById('htitle').value='';document.getElementById('hmins').value='';
+  save();renderHabits();checkAch();
+}
+function toggleH(id){
+  const h=D.habits.find(x=>x.id===id);if(!h)return;
+  const td=today();if(!D.streak[td])D.streak[td]=[];
+  const idx=D.streak[td].indexOf(id);
+  if(idx===-1){D.streak[td].push(id);D.stats.hDone++;toast(`+${h.xp} XP`,`"${h.title}" хийлээ!`);giveXp(h.xp,h.cat);checkAch();}
+  else{D.streak[td].splice(idx,1);save();renderHabits();renderTodayTime();renderStreak();}
+}
+function delH(id){D.habits=D.habits.filter(x=>x.id!==id);save();renderHabits()}
+
+// ── NAME ──────────────────────────────────────────────────────────────────────
+function editName(){
+  const d=document.getElementById('pname'),i=document.getElementById('pnameinput');
+  d.style.display='none';i.style.display='inline-block';i.value=D.player.name;i.focus();i.select();
+}
+function saveName(){
+  const i=document.getElementById('pnameinput'),d=document.getElementById('pname');
+  const n=i.value.trim();if(n)D.player.name=n;
+  i.style.display='none';d.style.display='inline-block';save();render();
+}
+
+// ── FORM TOGGLE ───────────────────────────────────────────────────────────────
+const FB={qform:'qformbtn',hform:'hformbtn',cform:'cformbtn'};
+function toggleForm(fid){
+  const f=document.getElementById(fid);f.classList.toggle('hide');
+  const b=FB[fid];if(b)document.getElementById(b).textContent=f.classList.contains('hide')?'+':'−';
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let _tt;
+function toast(xp,msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastXp').textContent=xp;document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),3000);
+}
+function showLvUp(lv){
+  document.getElementById('lvupNum').textContent=lv;
+  const rw=getLvReward(lv)||`Түвшин ${lv}! Чамаа баярлалаа!`;
+  document.getElementById('lvupRw').textContent='🎁 '+rw;
+  document.getElementById('lvup').classList.add('show');
+  if(!D.rewardLog)D.rewardLog=[];
+  if(!D.rewardLog.find(r=>r.lv===lv)){
+    D.rewardLog.push({id:'rl'+Date.now(),lv,text:rw,date:today(),used:false,seen:false});
+    save();
+  }
+  updateRwBadge();
+}
+function closeLvUp(){document.getElementById('lvup').classList.remove('show')}
+function updateRwBadge(){
+  const unseen=(D.rewardLog||[]).filter(r=>!r.seen).length;
+  const badge=document.getElementById('rwBadge');
+  if(badge){badge.textContent=unseen;badge.style.display=unseen?'inline-flex':'none';}
+}
+function toggleRewardUsed(id){
+  const r=(D.rewardLog||[]).find(x=>x.id===id);if(!r)return;
+  r.used=!r.used;save();updateRwBadge();openLvModal();
+}
+
+// ── FRIENDS ───────────────────────────────────────────────────────────────────
+const FR_KEY='lq_friendReqs';
+function getFRs(){try{return JSON.parse(localStorage.getItem(FR_KEY)||'[]')}catch{return[]}}
+function setFRs(a){localStorage.setItem(FR_KEY,JSON.stringify(a))}
+
+function friendStreakFor(d){
+  if(!d.habits||!d.habits.length)return 0;
+  let n=0,day=today();
+  while(true){const s=d.streak&&d.streak[day];if(!s||d.habits.some(h=>!s.includes(h.id)))break;n++;day=prevDay(day);}
+  return n;
+}
+
+function updateFriendReqBadge(){
+  const me=getCurUser();
+  const count=getFRs().filter(r=>r.to===me).length;
+  const b=document.getElementById('friendReqBadge');
+  if(b){b.textContent=count;b.style.display=count?'inline':'none';}
+}
+
+function sendFriendReq(){
+  const inp=document.getElementById('friendSearchInp');
+  const err=document.getElementById('friendSearchErr');
+  const target=(inp?.value||'').trim().replace(/^@/,'');
+  err.textContent='';
+  if(!target){err.textContent='Хэрэглэгчийн нэр оруулна уу';return;}
+  const me=getCurUser();
+  if(target===me){err.textContent='Өөртөө хүсэлт явуулах боломжгүй';return;}
+  const accts=getAccts();
+  if(!accts[target]){err.textContent='Хэрэглэгч олдсонгүй';return;}
+  if((D.friends||[]).includes(target)){err.textContent='Аль хэдийн найзууд байна';return;}
+  const reqs=getFRs();
+  if(reqs.find(r=>r.from===me&&r.to===target)){err.textContent='Хүсэлт аль хэдийн явуулсан байна';return;}
+  if(reqs.find(r=>r.from===target&&r.to===me)){
+    acceptFriendReq(reqs.find(r=>r.from===target&&r.to===me).id);
+    inp.value='';return;
+  }
+  reqs.push({id:'fr'+Date.now(),from:me,to:target,ts:Date.now()});
+  setFRs(reqs);
+  inp.value='';
+  toast('📨',`@${target} руу найзлах хүсэлт явуулсан!`);
+}
+
+function acceptFriendReq(id){
+  const reqs=getFRs();
+  const req=reqs.find(r=>r.id===id);if(!req)return;
+  setFRs(reqs.filter(r=>r.id!==id));
+  if(!D.friends)D.friends=[];
+  if(!D.friends.includes(req.from))D.friends.push(req.from);
+  // also add current user to sender's friends list
+  const senderKey=dataKey(req.from);
+  try{
+    const sd=JSON.parse(localStorage.getItem(senderKey)||'{}');
+    if(!sd.friends)sd.friends=[];
+    if(!sd.friends.includes(req.to))sd.friends.push(req.to);
+    localStorage.setItem(senderKey,JSON.stringify(sd));
+  }catch{}
+  save();updateFriendReqBadge();renderFriends();
+  toast('🤝',`@${req.from} найздаа нэмэгдлээ!`);
+}
+
+function declineFriendReq(id){
+  setFRs(getFRs().filter(r=>r.id!==id));
+  updateFriendReqBadge();renderFriends();
+}
+
+function removeFriend(){
+  const modal=document.getElementById('friendModal');
+  const target=modal.dataset.username;
+  if(!target)return;
+  if(!confirm(`@${target}-г найзуудаас хасах уу?`))return;
+  D.friends=(D.friends||[]).filter(u=>u!==target);
+  // also remove self from their list
+  try{
+    const td=JSON.parse(localStorage.getItem(dataKey(target))||'{}');
+    if(td.friends)td.friends=td.friends.filter(u=>u!==getCurUser());
+    localStorage.setItem(dataKey(target),JSON.stringify(td));
+  }catch{}
+  save();closeFriendModal();renderFriends();
+  toast('👋',`@${target} найзуудаас хасагдлаа`);
+}
+
+let _viewingFriend=null;
+function openFriendModal(username){
+  _viewingFriend=username;
+  let fd;
+  try{fd=mg(JSON.parse(localStorage.getItem(dataKey(username))||'{}'));}catch{fd=def();}
+  const p=fd.player||{};
+  const modal=document.getElementById('friendModal');
+  modal.dataset.username=username;
+  const avEl=document.getElementById('friendModalAvatar');
+  if(p.avatarImg){avEl.innerHTML=`<img src="${p.avatarImg}" style="width:64px;height:64px;border-radius:50%;object-fit:cover">`;}
+  else{avEl.innerHTML='';avEl.textContent=p.avatar||'⚔️';}
+  document.getElementById('friendModalName').textContent=p.name||username;
+  document.getElementById('friendModalUser').textContent='@'+username;
+  document.getElementById('friendModalLv').textContent='LV.'+( p.level||1);
+  document.getElementById('friendModalStreak').textContent=friendStreakFor(fd)+'🔥';
+  document.getElementById('friendModalXp').textContent=p.totalXp||0;
+  document.getElementById('friendModalBio').textContent=p.bio||'';
+  const quests=(p.mainQuests||[]).filter(q=>!q.done);
+  document.getElementById('friendModalQuests').innerHTML=quests.length
+    ?`<div style="font-size:11px;color:var(--t2);margin-bottom:6px">Идэвхтэй зорилгууд:</div>`
+     +quests.map(q=>`<div style="font-size:12px;color:var(--t1);padding:4px 0;border-bottom:1px solid var(--border)">🎯 ${esc(q.text)}</div>`).join('')
+    :'';
+  modal.classList.add('show');
+}
+function closeFriendModal(){document.getElementById('friendModal').classList.remove('show');}
+
+function renderFriends(){
+  const me=getCurUser();
+  const reqs=getFRs().filter(r=>r.to===me);
+  // requests card
+  const reqCard=document.getElementById('friendReqsCard');
+  const reqList=document.getElementById('friendReqsList');
+  if(reqs.length){
+    reqCard.style.display='block';
+    reqList.innerHTML=reqs.map(r=>`
+      <div class="fr-req-card">
+        <div style="font-size:24px">👤</div>
+        <div style="flex:1">
+          <div class="fr-req-name">@${esc(r.from)}</div>
+          <div class="fr-req-sub">Найзлах хүсэлт илгээсэн</div>
+        </div>
+        <button class="btn gold" style="font-size:12px;padding:5px 12px" onclick="acceptFriendReq('${r.id}')">✓ Зөвшөөрөх</button>
+        <button class="btn" style="font-size:12px;padding:5px 10px;margin-left:4px" onclick="declineFriendReq('${r.id}')">✕</button>
+      </div>`).join('');
+  }else{reqCard.style.display='none';}
+  // friends list
+  const friends=D.friends||[];
+  const listEl=document.getElementById('friendsList');
+  if(!friends.length){
+    listEl.innerHTML='<div class="empty">Найз байхгүй байна. Дээрх хайлтаар найз нэмнэ үү.</div>';return;
+  }
+  listEl.innerHTML=friends.map(u=>{
+    let fd;try{fd=mg(JSON.parse(localStorage.getItem(dataKey(u))||'{}'));}catch{fd=def();}
+    const p=fd.player||{};
+    const sk=friendStreakFor(fd);
+    const avHtml=p.avatarImg
+      ?`<div class="fr-avatar"><img src="${p.avatarImg}"></div>`
+      :`<div class="fr-avatar">${p.avatar||'⚔️'}</div>`;
+    return`<div class="fr-card" onclick="openFriendModal('${u}')">
+      ${avHtml}
+      <div class="fr-info">
+        <div class="fr-name">${esc(p.name||u)}</div>
+        <div class="fr-meta">@${esc(u)} · LV.${p.level||1} · ${sk}🔥 streak</div>
+      </div>
+      <div style="font-size:11px;color:var(--gold);font-weight:700">${p.totalXp||0} XP</div>
+    </div>`;
+  }).join('');
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function doResetSelected(){
+  const checks=[...document.querySelectorAll('#resetCheckList input:checked')].map(c=>c.value);
+  if(!checks.length){toast('⚠','Устгах зүйл сонгоогүй байна');return;}
+  if(!confirm(`Сонгосон ${checks.length} зүйлийг устгах уу? Буцааж болохгүй!`))return;
+  if(checks.includes('quests')){D.quests=[];D.stats.qDone=0;}
+  if(checks.includes('habits')){D.habits=[];D.streak={};D.stats.hDone=0;}
+  if(checks.includes('sessions')){D.sessions=[];D.activeTimer=null;clearInterval(timerTick);timerTick=null;}
+  if(checks.includes('mindmap')){D.mindMap={goals:[],links:[]};D.pinnedIds=[];}
+  if(checks.includes('xp')){D.player.totalXp=0;D.player.level=1;D.xpLog=[];D.skills={mind:0,body:0,disc:0};}
+  if(checks.includes('achs')){D.earned=[];D.customAchs=[];D.rewardLog=[];}
+  if(checks.includes('calnotes')){D.calNotes={};}
+  if(checks.includes('cats')){D.cats=[{id:'mind',name:'🧠 Оюун ухаан',color:'#a855f7'},{id:'body',name:'💪 Бие',color:'#f87171'},{id:'disc',name:'⏳ Сахилга',color:'#3b82f6'}];D.tasks=[];}
+  document.querySelectorAll('#resetCheckList input').forEach(c=>c.checked=false);
+  const rp=document.getElementById('resetPanel');if(rp)rp.style.display='none';
+  save();render();toast('✓',`${checks.length} зүйл цэвэрлэгдлээ`);
+}
+function doReset(){
+  if(!confirm('Бүх өгөгдлийг устгах уу? Буцааж болохгүй!'))return;
+  clearInterval(timerTick);timerTick=null;
+  const u=getCurUser();if(u)localStorage.removeItem(dataKey(u));
+  D=def();save();render();toast('✓','Бүх өгөгдөл цэвэрлэгдлээ');
+}
+
+// ── INVITE FORM ───────────────────────────────────────────────────────────────
+// EmailJS тохиргоо — дараах 4 утгыг emailjs.com дээрх акаунтаасаа авна уу
+const EMAILJS_PK        = 'YOUR_PUBLIC_KEY';         // Public Key
+const EMAILJS_SVC       = 'YOUR_SERVICE_ID';         // Service ID (Gmail)
+const EMAILJS_TPL_OWNER = 'YOUR_OWNER_TEMPLATE_ID';  // Owner-д мэдэгдэх template
+const EMAILJS_TPL_USER  = 'YOUR_USER_TEMPLATE_ID';   // Хэрэглэгчид баталгаажуулах template
+
+(function checkInviteMode(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('invite')==='1'){
+    document.getElementById('authScreen').style.display='none';
+    document.getElementById('inviteScreen').style.display='flex';
+    return;
+  }
+  try{
+    const rem=JSON.parse(localStorage.getItem('lq_rem')||'null');
+    if(rem&&rem.user&&rem.pin){
+      document.getElementById('liUser').value=rem.user;
+      document.getElementById('liPin').value=rem.pin;
+      const cb=document.getElementById('liRemember');
+      if(cb)cb.checked=true;
+    }
+  }catch(e){}
+})();
+
+async function submitInvite(){
+  const name=document.getElementById('inviteName').value.trim();
+  const email=document.getElementById('inviteEmail').value.trim();
+  const err=document.getElementById('inviteErr');
+  err.textContent='';
+  if(!name){err.textContent='Нэрээ оруулна уу';return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Gmail хаягаа зөв оруулна уу';return;}
+  const btn=document.getElementById('inviteBtn');
+  btn.disabled=true;btn.textContent='Явуулж байна...';
+  try{
+    await emailjs.send(EMAILJS_SVC,EMAILJS_TPL_OWNER,{
+      from_name:name,from_email:email,to_email:'dgerelmaa11@gmail.com'
+    },EMAILJS_PK);
+    await emailjs.send(EMAILJS_SVC,EMAILJS_TPL_USER,{
+      to_name:name,to_email:email
+    },EMAILJS_PK);
+    document.getElementById('inviteFormFields').style.display='none';
+    document.getElementById('inviteSuccess').style.display='block';
+  }catch(e){
+    err.textContent='Алдаа гарлаа. Дахин оролдоно уу.';
+    btn.disabled=false;btn.textContent='Илгээх →';
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(function(){
+  const u=getCurUser();
+  if(u&&getAccts()[u]){D=load();hideAuthScreen();render();if(D.activeTimer)applyTimerUI();}
+  // else auth screen stays visible
+})();
+</script>
+</body>
+</html>
