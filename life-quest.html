@@ -112,8 +112,11 @@ body{background:var(--bg0);color:var(--t1);font-family:-apple-system,BlinkMacSys
 
 /* MIND MAP CANVAS */
 .mm-canvas{position:relative;width:100%;height:520px;background:#06090f;overflow:hidden;border-radius:0 0 11px 11px}
+.mm-world{position:absolute;inset:0;transform-origin:0 0}
 .mm-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .mm-nodes{position:absolute;inset:0}
+.mm-zoom-btn{background:rgba(255,255,255,.07);border:1px solid var(--border);color:var(--t1);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-weight:700;transition:background .15s}
+.mm-zoom-btn:hover{background:rgba(255,255,255,.14)}
 .mm-toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
 .mm-root{position:absolute;transform:translate(-50%,-50%);z-index:10;
   background:linear-gradient(135deg,var(--purple),var(--emerald));
@@ -300,25 +303,15 @@ input.f.w55{width:52px;flex:none}
 .total-row{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px}
 
 /* SKILLS */
-.sk{margin-bottom:18px}.sk:last-child{margin-bottom:0}
+.sk{margin-bottom:14px}.sk:last-child{margin-bottom:0}
 .skrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .skname{font-size:14px;font-weight:600}
 .sklv{font-size:12px;color:var(--t2)}
 .skbg{height:9px;background:var(--bg2);border-radius:5px;overflow:hidden}
-.sk-children{margin-top:10px;padding-left:14px;border-left:2px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:8px}
-.sk-node{background:rgba(255,255,255,.04);border-radius:10px;padding:9px 12px}
-.sk-node-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.sk-node-name{font-size:13px;font-weight:600;flex:1}
-.sk-node-lv{font-size:11px;color:var(--t2)}
-.sk-node-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s}
-.sk-node:hover .sk-node-actions{opacity:1}
-.sk-node-btn{background:none;border:none;color:var(--t2);cursor:pointer;font-size:12px;padding:2px 5px;border-radius:5px;transition:color .15s}
-.sk-node-btn:hover{color:var(--t1)}
-.sk-add-row{display:flex;gap:6px;margin-top:8px;padding-left:14px}
-.sk-prac-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:var(--t1);border-radius:7px;font-size:11px;padding:3px 10px;cursor:pointer;transition:background .15s;white-space:nowrap}
-.sk-prac-btn:hover{background:rgba(255,255,255,.15)}
 .skfill{height:100%;border-radius:5px;transition:width .5s ease}
-.skfill{transition:width .5s ease}
+.mind .skfill{background:linear-gradient(90deg,#7c3aed,var(--purple))}
+.body2 .skfill{background:linear-gradient(90deg,#dc2626,#f87171)}
+.disc .skfill{background:linear-gradient(90deg,#1d4ed8,var(--blue))}
 
 /* ACHIEVEMENTS */
 .achgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
@@ -480,6 +473,16 @@ input.f.w55{width:52px;flex:none}
 .cal-nav-yr:hover{border-color:var(--purple);color:var(--purple)}
 .cal-section-title{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;
   letter-spacing:.8px;margin:10px 0 6px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
+/* DAILY KANBAN */
+.daily-kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;align-items:flex-start}
+.daily-kanban::-webkit-scrollbar{height:4px}.daily-kanban::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.daily-col{min-width:210px;flex:1;background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.daily-col-hdr{display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:2px}
+.daily-col-title{font-size:13px;font-weight:700;color:var(--t1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.daily-col-title.done{text-decoration:line-through;color:var(--t2);opacity:.6}
+.daily-col-add input{width:100%;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.15);border-radius:8px;color:var(--t1);font-size:12px;padding:6px 10px;outline:none;transition:border-color .2s;margin-top:4px}
+.daily-col-add input:focus{border-color:rgba(255,215,0,.4)}
+.daily-col-add input::placeholder{color:rgba(255,255,255,.22)}
 
 /* AVATAR IMAGE */
 .avatar-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
@@ -488,6 +491,22 @@ input.f.w55{width:52px;flex:none}
   padding:5px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;
   color:var(--t2);font-size:12px;cursor:pointer;transition:all .18s}
 .avatar-upload-btn:hover{border-color:var(--purple);color:var(--purple)}
+
+/* RESULTS TAB */
+.res-sec{background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px}
+.res-sec-ttl{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.res-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.res-kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.res-kpi-v{font-size:24px;font-weight:800;line-height:1}
+.res-kpi-l{font-size:10px;color:var(--t2);margin-top:3px}
+.res-cmp{display:flex;align-items:center;gap:6px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:4px;border-left:3px solid var(--border)}
+.res-cmp-lbl{font-size:12px;color:var(--t1);flex:1}
+.res-cmp-yd{font-size:11px;color:var(--t2);min-width:42px;text-align:right}
+.res-cmp-td{font-size:13px;font-weight:700;color:var(--gold);min-width:52px;text-align:right}
+.res-cmp-diff{font-size:11px;min-width:46px;text-align:right;white-space:nowrap}
+.res-done-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:var(--t1)}
+.res-done-item:last-child{border-bottom:none}
+.res-done-ico{font-size:15px;flex-shrink:0;width:22px;text-align:center}
 
 /* RESPONSIVE */
 @media(max-width:680px){
@@ -526,7 +545,7 @@ input.f.w55{width:52px;flex:none}
       <input type="password" class="f pin-input" id="liPin" maxlength="6" placeholder="••••"
         autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
       <div style="display:flex;align-items:center;gap:7px;padding:0 2px">
-        <input type="checkbox" id="liRemember" style="accent-color:var(--gold);width:15px;height:15px;cursor:pointer">
+        <input type="checkbox" id="liRemember" checked style="accent-color:var(--gold);width:15px;height:15px;cursor:pointer">
         <label for="liRemember" style="font-size:12px;color:var(--t2);cursor:pointer;user-select:none">Нэр, кодыг сануулах</label>
       </div>
       <button class="btn gold" onclick="doLogin()" style="font-size:15px;padding:11px">Нэвтрэх →</button>
@@ -544,6 +563,13 @@ input.f.w55{width:52px;flex:none}
       <button class="btn gold" onclick="doRegister()" style="font-size:15px;padding:11px">Бүртгүүлэх →</button>
     </div>
     <div class="auth-err" id="authErr"></div>
+    <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
+      <div style="font-size:11px;color:var(--t2);text-align:center;margin-bottom:8px">Өөр browser-аас шилжих үү?</div>
+      <label style="display:flex;align-items:center;justify-content:center;gap:8px;padding:9px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:8px;cursor:pointer;color:var(--emerald);font-size:13px;font-weight:600;transition:background .2s" onmouseover="this.style.background='rgba(0,212,170,.16)'" onmouseout="this.style.background='rgba(0,212,170,.08)'">
+        📥 Аккаунт импортлох (.lq файл)
+        <input type="file" accept=".lq,.json" style="display:none" onchange="importAccount(this)">
+      </label>
+    </div>
   </div>
 </div>
 
@@ -647,6 +673,7 @@ input.f.w55{width:52px;flex:none}
     </div>
     <button class="btn gold" onclick="saveProfile()" style="width:100%;padding:10px;font-size:15px">💾 Хадгалах</button>
     <div class="prof-sep"></div>
+    <button onclick="exportAccount()" style="width:100%;padding:9px;background:none;border:1px solid rgba(0,212,170,.35);color:var(--emerald);border-radius:8px;cursor:pointer;font-size:13px;transition:background .2s;margin-bottom:7px" onmouseover="this.style.background='rgba(0,212,170,.1)'" onmouseout="this.style.background='none'">📤 Өөр browser-т шилжих (Export)</button>
     <button onclick="doLogout()" style="width:100%;padding:9px;background:none;border:1px solid rgba(239,68,68,.35);color:var(--red);border-radius:8px;cursor:pointer;font-size:13px;transition:background .2s" onmouseover="this.style.background='rgba(239,68,68,.1)'" onmouseout="this.style.background='none'">🚪 Гарах (Logout)</button>
   </div>
 </div>
@@ -695,9 +722,23 @@ input.f.w55{width:52px;flex:none}
     <button class="navlink" onclick="nav(this,'quests')"><span class="nav-ico">⚔️</span><span>Зорилго</span></button>
     <button class="navlink" onclick="nav(this,'daily')"><span class="nav-ico">🔁</span><span>Өдөр тутам</span></button>
     <button class="navlink" onclick="navCal(this)"><span class="nav-ico">📅</span><span>Календар</span></button>
-    <button class="navlink" onclick="nav(this,'skills')"><span class="nav-ico">🌳</span><span>Чадвар</span></button>
-    <button class="navlink" onclick="nav(this,'ach')"><span class="nav-ico">🏆</span><span>Шагнал</span></button>
-    <button class="navlink" onclick="nav(this,'stats')"><span class="nav-ico">📊</span><span>Статистик</span></button>
+    <button class="navlink" onclick="nav(this,'results')"><span class="nav-ico">📈</span><span>Үр дүн</span></button>
+    <div style="flex:1"></div>
+    <div style="position:relative">
+      <button class="navlink" id="moreMenuBtn" onclick="toggleMoreMenu(this)" style="gap:10px;border-left-color:transparent">
+        <span class="nav-ico" style="font-size:18px;line-height:1">☰</span><span>Дэлгэрэнгүй</span>
+      </button>
+      <div id="moreMenu" style="display:none;position:absolute;bottom:calc(100% + 4px);left:8px;right:8px;
+        background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:6px;z-index:200;
+        box-shadow:0 -8px 32px rgba(0,0,0,.4)">
+        <button class="navlink" id="moreAch" onclick="navMore(this,'ach')" style="border-radius:8px;border-left:none;padding:10px 14px">
+          <span class="nav-ico">🏆</span><span>Шагнал</span>
+        </button>
+        <button class="navlink" id="moreStats" onclick="navMore(this,'stats')" style="border-radius:8px;border-left:none;padding:10px 14px">
+          <span class="nav-ico">📊</span><span>Статистик</span>
+        </button>
+      </div>
+    </div>
   </nav>
 
   <main class="content">
@@ -723,6 +764,9 @@ input.f.w55{width:52px;flex:none}
         </div>
         <div id="pinnedList"></div>
       </div>
+
+      <!-- Upcoming goals widget -->
+      <div id="upcomingWidget" style="display:none;background:var(--bg1);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px"></div>
 
       <!-- Timer card (idle + running in one) -->
       <div class="card timer-card" id="timerCard">
@@ -767,17 +811,6 @@ input.f.w55{width:52px;flex:none}
         </div>
       </div>
 
-      <!-- Today time + sessions -->
-      <div class="card">
-        <div style="margin-bottom:12px">
-          <div class="ctitle" style="margin-bottom:10px">📊 Өнөөдрийн цаг</div>
-          <div id="todayTimeBars"></div>
-        </div>
-        <div style="border-top:1px solid var(--border);padding-top:12px">
-          <div class="ctitle" style="margin-bottom:10px">📋 Сессүүд</div>
-          <div id="sessionList"></div>
-        </div>
-      </div>
     </div><!-- #homeContent -->
 
     <!-- TAB PAGES -->
@@ -800,28 +833,9 @@ input.f.w55{width:52px;flex:none}
     </div>
 
     <div class="tab" id="tab-daily">
-      <div class="card">
-        <div class="crow">
-          <div class="ctitle">📅 Өдөр тутмын зуршил</div>
-          <button class="addbtn" onclick="toggleForm('hform')" id="hformbtn">+</button>
-        </div>
-        <div id="hlist"></div>
-        <div class="form hide" id="hform">
-          <div class="frow"><input type="text" class="f" id="htitle" placeholder="Зуршил нэр..." onkeydown="if(event.key==='Enter')addHabit()"></div>
-          <div class="frow">
-            <select class="f" id="hcat"></select>
-            <input type="number" class="f w55" id="hxp" value="20" min="5" max="100" placeholder="XP">
-            <input type="number" class="f w55" id="hmins" placeholder="⏱мин" min="1" max="480">
-            <button class="btn green" onclick="addHabit()">Нэмэх</button>
-          </div>
-          <div class="hint">⏱мин — нэг удаа зарцуулах минут (заавал биш)</div>
-        </div>
-      </div>
+      <div class="daily-kanban" id="dailyKanban"></div>
     </div>
 
-    <div class="tab" id="tab-skills">
-      <div class="card" id="skillTreeEl" style="padding:18px 16px"></div>
-    </div>
 
     <div class="tab" id="tab-ach">
       <div class="card">
@@ -860,15 +874,23 @@ input.f.w55{width:52px;flex:none}
       <div class="card" style="padding:0;overflow:hidden">
         <div class="mm-toolbar">
           <div class="ctitle">🗺 Mind Map</div>
-          <div style="display:flex;gap:7px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:2px 4px">
+              <button class="mm-zoom-btn" onclick="mmZoomOut()" title="Жижигрүүлэх">−</button>
+              <span id="mmZoomLabel" style="font-size:11px;color:var(--t2);min-width:34px;text-align:center">100%</span>
+              <button class="mm-zoom-btn" onclick="mmZoomIn()" title="Томруулах">+</button>
+              <button class="mm-zoom-btn" onclick="mmZoomReset()" title="Анхны хэмжээ" style="font-size:10px;width:auto;padding:0 5px">↺</button>
+            </div>
             <button class="btn sm gold" onclick="addMMGoal()">+ Шинэ зорилго</button>
             <button class="btn sm" id="mmLinkBtn" style="background:var(--bg2);color:var(--t2);border:1px solid var(--border)" onclick="toggleMMLink()">🔗 Холбох</button>
             <button class="btn sm" style="background:var(--bg2);color:var(--t2);border:1px solid var(--border)" onclick="clearMM()">Цэвэрлэх</button>
           </div>
         </div>
         <div class="mm-canvas" id="mmCanvas">
-          <svg class="mm-svg" id="mmSvg"></svg>
-          <div class="mm-nodes" id="mmNodes"></div>
+          <div class="mm-world" id="mmWorld">
+            <svg class="mm-svg" id="mmSvg"></svg>
+            <div class="mm-nodes" id="mmNodes"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -887,6 +909,7 @@ input.f.w55{width:52px;flex:none}
           </div>
         </div>
         <div id="calGrid"></div>
+        <div id="calMonthList" style="margin-top:14px"></div>
         <div class="cal-detail" id="calDetail" style="display:none">
           <div class="cal-detail-date" id="calDetailDate"></div>
           <div class="cal-note-add">
@@ -949,6 +972,23 @@ input.f.w55{width:52px;flex:none}
 
     <!-- Friends Tab -->
 
+    <!-- RESULTS TAB -->
+    <div class="tab" id="tab-results">
+      <div class="res-sec">
+        <div class="res-sec-ttl">📅 Өдрийн тайлан <span id="resDailyDate" style="font-weight:400;color:var(--t2);text-transform:none;letter-spacing:0;font-size:11px;margin-left:2px"></span></div>
+        <div class="res-kpi-grid" id="resDailyKpi"></div>
+        <div id="resDailyCharts" style="margin-bottom:14px"></div>
+        <div id="resDailyTime"></div>
+        <div id="resDailyCmp" style="margin-top:12px"></div>
+        <div id="resDailyDone" style="margin-top:12px"></div>
+      </div>
+      <div class="res-sec">
+        <div class="res-sec-ttl">📊 Сарын тайлан <span id="resMonthLabel" style="font-weight:400;color:var(--t2);text-transform:none;letter-spacing:0;font-size:11px;margin-left:2px"></span></div>
+        <div class="res-kpi-grid" id="resMonthKpi"></div>
+        <div id="resMonthTime"></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -998,7 +1038,7 @@ function def(){return{
   sessions:[],activeTimer:null,rewards:{},rewardLog:[],stats:{qDone:0,hDone:0},friends:[],
   mindMap:{goals:[],links:[]},pinnedIds:[],
   cats:[{id:'mind',name:'🧠 Оюун ухаан',color:'#a855f7'},{id:'body',name:'💪 Бие',color:'#f87171'},{id:'disc',name:'⏳ Сахилга',color:'#3b82f6'}],
-  tasks:[],calNotes:{},skillTree:[]
+  tasks:[],calNotes:{},skillTree:[],habitProgress:{}
 }}
 let D=def();
 function load(){
@@ -1028,6 +1068,13 @@ function mg(d){
   if(!d.friends)d.friends=[];
   if(!d.skillTree)d.skillTree=[];
   (d.cats||[]).forEach(c=>{if(d.skills[c.id]===undefined)d.skills[c.id]=0;});
+  (d.quests||[]).forEach(q=>{if(!('dueDate'in q))q.dueDate=null;});
+  (d.habits||[]).forEach(h=>{
+    if(!('mqId'in h))h.mqId=null;
+    if(!('type'in h))h.type=h.mins>0?'time':'toggle';
+    if(!('target'in h))h.target=h.mins||0;
+  });
+  if(!d.habitProgress)d.habitProgress={};
   return d;
 }
 function save(){const u=getCurUser();if(u)localStorage.setItem(dataKey(u),JSON.stringify(D))}
@@ -1067,6 +1114,7 @@ function doRegister(){
   const accts=getAccts();
   if(accts[user]){authErr('Энэ нэр аль хэдийн бүртгэлтэй');return}
   accts[user]={pin};saveAccts(accts);
+  localStorage.setItem('lq_rem',JSON.stringify({user,pin}));
   setCurUser(user);D=def();D.player.name=name||user;
   const old=localStorage.getItem('lq2');
   if(old&&confirm('Хуучин өгөгдөл олдлоо. Импорт хийх үү?')){try{D=mg(JSON.parse(old))}catch{}}
@@ -1076,7 +1124,7 @@ function doRegister(){
 function doLogout(){
   if(!confirm('Гарах уу?'))return;
   clearInterval(timerTick);timerTick=null;
-  sessionStorage.removeItem('lq_cur');D=def();
+  sessionStorage.removeItem('lq_cur');localStorage.removeItem('lq_rem');D=def();
   closeProfileModal();
   document.getElementById('authScreen').style.display='flex';
   document.getElementById('liUser').value='';document.getElementById('liPin').value='';
@@ -1150,6 +1198,7 @@ function globalStreak(){
 let curPage='home';
 function nav(btn,id){
   curPage=id;
+  closeMoreMenu();
   document.getElementById('homeContent').style.display='none';
   document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.navlink').forEach(e=>e.classList.remove('on'));
@@ -1157,9 +1206,32 @@ function nav(btn,id){
   btn.classList.add('on');
   document.getElementById('backBtn').classList.add('show');
   if(id==='stats')renderMonthly();
-  if(id==='mindmap')setTimeout(renderMindMap,0);
+  if(id==='results')renderResults();
+  if(id==='mindmap'){setTimeout(renderMindMap,0);const cv=document.getElementById('mmCanvas');if(cv){cv.removeEventListener('wheel',mmOnWheel);cv.addEventListener('wheel',mmOnWheel,{passive:false});}}
   if(id==='friends'){renderFriends();updateFriendReqBadge();}
 }
+function toggleMoreMenu(btn){
+  const m=document.getElementById('moreMenu');
+  if(!m)return;
+  const open=m.style.display==='block';
+  m.style.display=open?'none':'block';
+  btn.classList.toggle('on',!open);
+}
+function closeMoreMenu(){
+  const m=document.getElementById('moreMenu');
+  if(m)m.style.display='none';
+  document.getElementById('moreMenuBtn')?.classList.remove('on');
+}
+function navMore(btn,id){
+  closeMoreMenu();
+  nav(btn,id);
+  // also highlight the ☰ button when one of its items is active
+  document.getElementById('moreMenuBtn')?.classList.add('on');
+}
+document.addEventListener('click',e=>{
+  const m=document.getElementById('moreMenu');
+  if(m&&m.style.display==='block'&&!m.contains(e.target)&&!document.getElementById('moreMenuBtn')?.contains(e.target))closeMoreMenu();
+});
 function navToMM(e){
   if(e)e.stopPropagation();
   if(!(D.mindMap.goals||[]).length)initMM();
@@ -1197,7 +1269,7 @@ function renderStreak(){
 // ── TASK + CATEGORY MANAGER ───────────────────────────────────────────────────
 function fillCatSelects(){
   const opts=(D.cats||[]).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  ['timerCat','qcat','hcat'].forEach(id=>{
+  ['timerCat','qcat','hcat','sessCat'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     const cur=el.value;el.innerHTML=opts;
     if([...el.options].some(o=>o.value===cur))el.value=cur;
@@ -1298,7 +1370,7 @@ function stopTimer(){
   const xpGain=Math.floor(secs/60);
   if(xpGain>0)giveXp(xpGain,cat);
   save();toast(`⏱ ${fmtSecs(secs)}${xpGain>0?` +${xpGain}XP`:''}`,`"${title}" дуусгалаа!`);
-  applyTimerUI();renderTodayTime();renderSessions();
+  applyTimerUI();renderSessions();
 }
 function applyTimerUI(){
   const on=!!D.activeTimer;
@@ -1332,6 +1404,27 @@ function updateClock(){
   const xpEl=document.getElementById('timerXpPreview');
   if(xpEl)xpEl.textContent=xp>0?`⚡ ${xp} XP авна`:(paused?'':'⚡ 1 минут болоход XP авна');
 }
+function toggleSessForm(){
+  const f=document.getElementById('sessAddForm');
+  const b=document.getElementById('sessFormBtn');
+  if(!f)return;
+  const show=f.style.display==='none';
+  f.style.display=show?'block':'none';
+  if(b)b.textContent=show?'−':'+';
+  if(show){fillCatSelects();document.getElementById('sessTitle')?.focus();}
+}
+function addSessionManual(){
+  const title=document.getElementById('sessTitle')?.value.trim();if(!title)return;
+  const cat=document.getElementById('sessCat')?.value||((D.cats&&D.cats[0])?D.cats[0].id:'mind');
+  const h=parseInt(document.getElementById('sessH')?.value)||0;
+  const m=parseInt(document.getElementById('sessM')?.value)||0;
+  const secs=(h*60+m)*60;if(secs<=0)return;
+  D.sessions.push({id:'s'+Date.now(),title,cat,secs,mins:Math.floor(secs/60),startTs:Date.now(),startDate:today()});
+  document.getElementById('sessTitle').value='';
+  document.getElementById('sessH').value='';
+  document.getElementById('sessM').value='';
+  save();renderSessions();
+}
 function renderTodayTime(){
   const td=today(),time={};
   D.sessions.filter(s=>s.startDate===td).forEach(s=>{
@@ -1356,8 +1449,8 @@ function renderTodayTime(){
     <div class="total-row"><span style="color:var(--t2)">Нийт өнөөдөр</span><span style="color:var(--gold);font-weight:700">${fmtTime(total)}</span></div>`;
 }
 function renderSessions(){
+  const el=document.getElementById('sessionList');if(!el)return;
   const list=D.sessions.filter(s=>s.startDate===today()).slice().reverse();
-  const el=document.getElementById('sessionList');
   if(!list.length){el.innerHTML='<div class="empty" style="padding:8px 0">Өнөөдөр сесс байхгүй байна.</div>';return}
   el.innerHTML=list.map(s=>{
     const t=new Date(s.startTs).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
@@ -1415,7 +1508,19 @@ function saveLvRewards(){
 
 // ── MIND MAP (XMind style · draggable · multi-goal) ──────────────────────────
 const MMP=['#ff6b6b','#4ecdc4','#45b7d1','#ffd93d','#c77dff','#96ceb4','#ff9f43','#54a0ff'];
-let mmDrag=null,mmRaf=null,mmLinkMode=false,mmLinkSrc=null;
+let mmDrag=null,mmRaf=null,mmLinkMode=false,mmLinkSrc=null,mmZoom=1;
+function mmApplyZoom(){
+  const w=document.getElementById('mmWorld');if(!w)return;
+  w.style.transform=`scale(${mmZoom})`;
+  const lb=document.getElementById('mmZoomLabel');if(lb)lb.textContent=Math.round(mmZoom*100)+'%';
+}
+function mmZoomIn(){mmZoom=Math.min(3,parseFloat((mmZoom+0.15).toFixed(2)));mmApplyZoom();}
+function mmZoomOut(){mmZoom=Math.max(0.25,parseFloat((mmZoom-0.15).toFixed(2)));mmApplyZoom();}
+function mmZoomReset(){mmZoom=1;mmApplyZoom();}
+function mmOnWheel(e){
+  e.preventDefault();
+  if(e.deltaY<0)mmZoomIn();else mmZoomOut();
+}
 
 function renderMindMap(){
   const cv=document.getElementById('mmCanvas');
@@ -1433,29 +1538,6 @@ function renderMindMap(){
     h.innerHTML='<div class="mm-empty-ico">🗺</div><div>+ Шинэ зорилго нэмэх</div>';
     nc.appendChild(h);return;
   }
-  // draw goal-to-goal links first (below everything)
-  (D.mindMap.links||[]).forEach(lk=>{
-    const ga=goals.find(g=>g.id===lk.from),gb=goals.find(g=>g.id===lk.to);
-    if(!ga||!gb)return;
-    // positions may not be computed yet; use stored or auto
-    const gia=goals.indexOf(ga),gib=goals.indexOf(gb);
-    function autoPos(g,gi){
-      if(g.x!=null&&g.y!=null)return[g.x,g.y];
-      const c=gi%2,r=Math.floor(gi/2);
-      return goals.length===1?[W/2,H/2]:[W*(c+1)/3,H*(r+1)/(Math.ceil(goals.length/2)+1)];
-    }
-    const[ax,ay]=autoPos(ga,gia),[bx,by]=autoPos(gb,gib);
-    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
-    const cp=Math.abs(bx-ax)*0.4;
-    const dir=bx>=ax?1:-1;
-    p.setAttribute('d',`M${ax} ${ay} C${ax+dir*cp} ${ay} ${bx-dir*cp} ${by} ${bx} ${by}`);
-    p.setAttribute('stroke','#a78bfa');p.setAttribute('stroke-width','2');
-    p.setAttribute('fill','none');p.setAttribute('stroke-dasharray','7 4');p.setAttribute('opacity','0.6');
-    p.style.cursor='pointer';p.setAttribute('data-lid',lk.id);
-    p.addEventListener('click',()=>{if(confirm('Холболтыг устгах уу?')){D.mindMap.links=D.mindMap.links.filter(l=>l.id!==lk.id);save();renderMindMap();}});
-    svg.appendChild(p);
-  });
-
   goals.forEach((goal,gi)=>{
     let autoGx,autoGy;
     if(goals.length===1){autoGx=W/2;autoGy=H/2;}
@@ -1464,7 +1546,7 @@ function renderMindMap(){
     goal._x=gx;goal._y=gy;
     const isLinkSrc=mmLinkMode&&mmLinkSrc===goal.id;
     const gd=document.createElement('div');
-    gd.className='mm-root';
+    gd.className='mm-root';gd.dataset.goalid=goal.id;
     const doneStyle=goal.done?';background:linear-gradient(135deg,#92400e,#d97706);box-shadow:0 4px 20px rgba(217,119,6,.5);opacity:0.85':'';
     gd.style.cssText=`left:${gx}px;top:${gy}px;touch-action:none${doneStyle}${isLinkSrc?';outline:3px solid #a78bfa;outline-offset:3px':''}${mmLinkMode?';cursor:crosshair':''}`;
     const doneLabel=goal.done?`<span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.4);pointer-events:none">✓</span>`:'';
@@ -1484,6 +1566,41 @@ function renderMindMap(){
     mmSide(svg,nc,goal,right,gx,gy,1);
     mmSide(svg,nc,goal,left,gx,gy,-1);
   });
+  // draw links after all positions are set
+  (D.mindMap.links||[]).forEach(lk=>{
+    const pa=mmFindPos(lk.from),pb=mmFindPos(lk.to);
+    if(!pa||!pb)return;
+    const[ax,ay]=pa,[bx,by]=pb;
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    const cp=Math.abs(bx-ax)*0.4;
+    const dir=bx>=ax?1:-1;
+    p.setAttribute('d',`M${ax} ${ay} C${ax+dir*cp} ${ay} ${bx-dir*cp} ${by} ${bx} ${by}`);
+    p.setAttribute('stroke','#a78bfa');p.setAttribute('stroke-width','2');
+    p.setAttribute('fill','none');p.setAttribute('stroke-dasharray','7 4');p.setAttribute('opacity','0.6');
+    svg.appendChild(p);
+    const mx=(ax+bx)/2,my=(ay+by)/2;
+    const btn=document.createElement('button');
+    btn.style.cssText=`position:absolute;left:${mx}px;top:${my}px;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:#1e1b4b;border:1.5px solid #a78bfa;color:#a78bfa;font-size:10px;line-height:1;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;padding:0;opacity:0;transition:opacity .15s`;
+    btn.textContent='✕';btn.title='Холболт салгах';
+    btn.onmouseenter=()=>{btn.style.opacity='1';};
+    btn.onmouseleave=()=>{btn.style.opacity='0';};
+    btn.onpointerdown=e=>{e.stopPropagation();};
+    btn.onclick=e=>{e.stopPropagation();delMMLink(lk.id);};
+    nc.appendChild(btn);
+  });
+}
+
+function mmFindPos(id){
+  for(const g of D.mindMap.goals||[]){
+    if(g.id===id)return g._x!=null?[g._x,g._y]:null;
+    function walk(nodes){
+      for(const n of nodes){
+        if(n.id===id)return n._x!=null?[n._x,n._y]:null;
+        if(n.children){const r=walk(n.children);if(r)return r;}
+      }return null;
+    }
+    const r=walk(g.children||[]);if(r)return r;
+  }return null;
 }
 
 function mmTreeH(node,lv){
@@ -1505,14 +1622,18 @@ function mmSide(svg,nc,goal,nodes,gx,gy,dir){
     const col=MMP[node.ci%MMP.length];
     mmBez(svg,gx,gy,nx,ny,col,2.5,dir,0.55);
     const md=document.createElement('div');
-    md.className='mm-main';
-    md.style.cssText=`left:${nx}px;top:${ny}px;background:${col}22;border-color:${col};color:${col};touch-action:none`;
+    md.className='mm-main';md.dataset.nodeid=node.id;
+    const isNodeLinkSrc=mmLinkMode&&mmLinkSrc===node.id;
+    md.style.cssText=`left:${nx}px;top:${ny}px;background:${col}22;border-color:${col};color:${col};touch-action:none${isNodeLinkSrc?';outline:3px solid #a78bfa;outline-offset:3px':''}${mmLinkMode?';cursor:crosshair':''}`;
     md.innerHTML=`<div ondblclick="mmEditText('${node.id}',this)">${esc(node.text)}</div>
       <div class="mm-actions">
         <button class="mm-act" style="background:${col};color:#000" onpointerdown="event.stopPropagation()" onclick="mmAddSub('${node.id}')">+</button>
         <button class="mm-act" style="background:transparent;color:${col};opacity:.55;font-weight:400" onpointerdown="event.stopPropagation()" onclick="mmDel('${node.id}','${goal.id}',null)">✕</button>
       </div>`;
-    md.addEventListener('pointerdown',e=>mmDown(e,node.id,'main',goal.id));
+    md.addEventListener('pointerdown',e=>{
+      if(mmLinkMode){e.stopPropagation();mmLinkClick(node.id);return;}
+      mmDown(e,node.id,'main',goal.id);
+    });
     nc.appendChild(md);
     const subs=node.children||[];
     if(subs.length){
@@ -1563,7 +1684,7 @@ function mmDown(e,id,type,goalId){
     origY=n._y??(n.dy!=null?gy+n.dy:gy);
     n.dx=origX-gx;n.dy=origY-gy;
   }
-  mmDrag={id,type,goalId,smx:e.clientX-rect.left,smy:e.clientY-rect.top,ox:origX,oy:origY};
+  mmDrag={id,type,goalId,smx:(e.clientX-rect.left)/mmZoom,smy:(e.clientY-rect.top)/mmZoom,ox:origX,oy:origY};
   cv.classList.add('dragging');
   cv.setPointerCapture&&e.pointerId&&cv.setPointerCapture(e.pointerId);
   document.addEventListener('pointermove',mmMove);
@@ -1573,7 +1694,7 @@ function mmDown(e,id,type,goalId){
 function mmMove(e){
   if(!mmDrag)return;
   const cv=document.getElementById('mmCanvas'),rect=cv.getBoundingClientRect();
-  const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  const mx=(e.clientX-rect.left)/mmZoom,my=(e.clientY-rect.top)/mmZoom;
   const nx=mmDrag.ox+(mx-mmDrag.smx),ny=mmDrag.oy+(my-mmDrag.smy);
   if(mmDrag.type==='goal'){
     const g=D.mindMap.goals.find(g=>g.id===mmDrag.id);if(g){g.x=nx;g.y=ny;}
@@ -1615,9 +1736,14 @@ function mmSetText(id,text){
 function addMMGoal(){
   const cv=document.getElementById('mmCanvas');
   const W=cv?.offsetWidth||640,H=cv?.offsetHeight||520;
-  D.mindMap.goals.push({id:'g'+Date.now(),text:'Шинэ зорилго',
+  const newId='g'+Date.now();
+  D.mindMap.goals.push({id:newId,text:'Шинэ зорилго',
     x:W*0.2+Math.random()*W*0.6,y:H*0.2+Math.random()*H*0.6,children:[]});
   save();renderMindMap();
+  setTimeout(()=>{
+    const el=document.querySelector(`[data-goalid="${newId}"] div[ondblclick]`);
+    if(el)mmEditText(newId,el);
+  },0);
 }
 
 function delMMGoal(id){
@@ -1628,8 +1754,13 @@ function delMMGoal(id){
 function addMMMain(goalId){
   const goal=D.mindMap.goals.find(g=>g.id===goalId);if(!goal)return;
   const ch=goal.children,rc=ch.filter(c=>c.side==='right').length,lc=ch.filter(c=>c.side==='left').length;
-  ch.push({id:'mm'+Date.now(),text:'Гол сэдэв',side:rc<=lc?'right':'left',ci:ch.length,dx:null,dy:null,children:[]});
+  const newId='mm'+Date.now();
+  ch.push({id:newId,text:'Гол сэдэв',side:rc<=lc?'right':'left',ci:ch.length,dx:null,dy:null,children:[]});
   save();renderMindMap();
+  setTimeout(()=>{
+    const el=document.querySelector(`[data-nodeid="${newId}"] div[ondblclick]`);
+    if(el)mmEditText(newId,el);
+  },0);
 }
 
 function mmAddSub(parentId){
@@ -1652,6 +1783,10 @@ function clearMM(){
   D.mindMap={goals:[],links:[]};save();renderMindMap();
 }
 
+function delMMLink(id){
+  D.mindMap.links=(D.mindMap.links||[]).filter(l=>l.id!==id);
+  save();renderMindMap();
+}
 function toggleMMLink(){
   mmLinkMode=!mmLinkMode;mmLinkSrc=null;
   const btn=document.getElementById('mmLinkBtn');
@@ -1725,11 +1860,13 @@ const DOW_MN=['Да','Мя','Лх','Пү','Ба','Бя','Ня'];
 const MN_LBL=['Нэгдүгээр','Хоёрдугаар','Гуравдугаар','Дөрөвдүгээр','Тавдугаар','Зургадугаар','Долдугаар','Наймдугаар','Есдүгээр','Аравдугаар','Арван нэгдүгээр','Арван хоёрдугаар'];
 
 function navCal(btn){
+  closeMoreMenu();
   document.querySelectorAll('.navlink').forEach(e=>e.classList.remove('on'));
   btn.classList.add('on');
   document.getElementById('homeContent').style.display='none';
   document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));
   document.getElementById('tab-calendar').classList.add('on');
+  document.getElementById('backBtn').classList.add('show');
   renderCalendar();
 }
 
@@ -1751,19 +1888,57 @@ function renderCalendar(){
     const xpDay=(D.xpLog||[]).filter(e=>e.d===c.date).reduce((s,e)=>s+e.a,0);
     const hasNote=!c.other&&(D.calNotes[c.date]||[]).length>0;
     const dayGoals=!c.other?(D.player.mainQuests||[]).filter(g=>!g.done&&g.date===c.date):[];
-    const hasGoal=dayGoals.length>0;
+    const dayDueQuests=!c.other?(D.quests||[]).filter(q=>!q.done&&q.dueDate===c.date):[];
+    const hasGoal=dayGoals.length>0||dayDueQuests.length>0;
     const isT=c.date===td,hasAct=!c.other&&(habits.length>0||mins>0);
     const dots=habits.slice(0,6).map(h=>`<div class="cal-dot" style="background:${catColor(h.cat)}"></div>`).join('');
-    const goalDot=hasGoal?`<div class="cal-dot" style="background:var(--gold)"></div>`:'';
-    const goalLabels=dayGoals.map(g=>`<div class="cal-goal-label">${esc(g.text)}</div>`).join('');
+    const goalDot=dayGoals.length?`<div class="cal-dot" style="background:var(--gold)"></div>`:'';
+    const dueDot=dayDueQuests.length?`<div class="cal-dot" style="background:#3b82f6"></div>`:'';
     return`<div class="cal-day${c.other?' other-month':''}${isT?' today':''}${hasAct?' has-act':''}${hasNote?' has-note':''}${hasGoal?' has-goal':''}" onclick="calClick('${c.date}')">
       <div class="cal-day-num">${c.day}</div>
-      ${(dots||goalDot)?`<div class="cal-dots">${dots}${goalDot}</div>`:''}
-      ${goalLabels}
+      ${(dots||goalDot||dueDot)?`<div class="cal-dots">${dots}${goalDot}${dueDot}</div>`:''}
       ${mins>0?`<div class="cal-time">${fmtTime(mins)}</div>`:''}
       ${xpDay>0?`<div class="cal-xp">+${xpDay}xp</div>`:''}
     </div>`;
   }).join('')}</div>`;
+  // month list below grid
+  const allGoals=(D.player.mainQuests||[]).filter(g=>!g.done&&g.date);
+  const allDueQuests=(D.quests||[]).filter(q=>!q.done&&q.dueDate);
+  const allItems=[
+    ...allGoals.map(g=>({date:g.date,label:g.text,type:'goal',id:g.id})),
+    ...allDueQuests.map(q=>({date:q.dueDate,label:q.title,type:'quest',id:q.id,xp:q.xp,cat:q.cat}))
+  ].sort((a,b)=>a.date.localeCompare(b.date));
+  const mlist=document.getElementById('calMonthList');
+  if(allItems.length){
+    const todayMs=new Date(today()+'T00:00:00').getTime();
+    mlist.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">📆 Нийт төлөвлөгөө</div>`+
+    allItems.map(item=>{
+      const itemMs=new Date(item.date+'T00:00:00').getTime();
+      const diff=Math.round((itemMs-todayMs)/86400000);
+      const [dy,dm,dd]=item.date.split('-');
+      let cdText='',cdColor='';
+      if(diff===0){cdText='Өнөөдөр';cdColor='#fb923c';}
+      else if(diff>0){cdText=`${diff} өдөр үлдсэн`;cdColor='var(--t2)';}
+      else{cdText=`${Math.abs(diff)} өдрийн өмнө`;cdColor='#f87171';}
+      const dot=item.type==='goal'
+        ?`<div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:3px"></div>`
+        :`<div style="width:8px;height:8px;border-radius:50%;background:#3b82f6;flex-shrink:0;margin-top:3px"></div>`;
+      const dateStr=`${dy}.${dm}.${dd}`;
+      return`<div style="display:flex;align-items:flex-start;gap:10px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background=''" onclick="calClick('${item.date}')">
+        ${dot}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(item.label)}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+            <span style="font-size:11px;color:var(--t2)">${dateStr}</span>
+            <span style="font-size:11px;color:${cdColor}">${cdText}</span>
+            ${item.type==='quest'?`<span style="font-size:11px;color:var(--purple)">+${item.xp}XP</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    mlist.innerHTML='';
+  }
   if(curCalDate)calClick(curCalDate);
   else document.getElementById('calDetail').style.display='none';
 }
@@ -1786,6 +1961,7 @@ function calClick(date){
   const habits=(D.streak[date]||[]).map(id=>D.habits.find(h=>h.id===id)).filter(Boolean);
   const sessions=(D.sessions||[]).filter(s=>(s.startDate||'')===date);
   const quests=D.quests.filter(q=>q.done&&q.ca===date);
+  const dueQuests=D.quests.filter(q=>!q.done&&q.dueDate===date);
   let html='';
   const scheduledGoals=(D.player.mainQuests||[]).filter(g=>!g.done&&g.date===date);
   const undatedGoals=(D.player.mainQuests||[]).filter(g=>!g.done&&!g.date);
@@ -1817,7 +1993,43 @@ function calClick(date){
       <button style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.35);color:var(--gold);border-radius:6px;font-size:11px;padding:2px 8px;cursor:pointer;white-space:nowrap" onclick="setMQDate('${g.id}','${date}')">📅 Энэ өдөрт</button>
     </div>`).join('');
   }
-  if(quests.length){html+=`<div class="cal-section-title">⚔️ Дуусгасан зорилго</div>`;html+=quests.map(q=>`<div class="item"><div class="circle done" style="width:18px;height:18px;font-size:9px;flex-shrink:0">✓</div><div class="iinfo"><div class="ititle done" style="font-size:13px">${esc(q.title)}</div></div></div>`).join('');}
+  const undatedQuests=(D.quests||[]).filter(q=>!q.done&&!q.dueDate);
+  if(undatedQuests.length){
+    html+=`<div class="cal-section-title">📋 Цаг тавигдаагүй даалгавар</div>`;
+    html+=undatedQuests.map(q=>`<div class="item">
+      <div style="width:18px;height:18px;border:2px solid #3b82f6;border-radius:50%;flex-shrink:0;opacity:.5"></div>
+      <div class="iinfo">
+        <div class="ititle" style="font-size:13px;opacity:.8">${esc(q.title)}</div>
+        <div class="imeta" style="margin-top:2px"><span class="tag txp">+${q.xp} XP</span><span class="tag t${q.cat}">${catLabel(q.cat)}</span></div>
+      </div>
+      <button style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.35);color:#60a5fa;border-radius:6px;font-size:11px;padding:2px 8px;cursor:pointer;white-space:nowrap" onclick="setQDate('${q.id}','${date}')">📅 Энэ өдөрт</button>
+    </div>`).join('');
+  }
+  if(dueQuests.length){
+    html+=`<div class="cal-section-title">📋 Хийх даалгавар</div>`;
+    const todayMs=new Date(today()+'T00:00:00').getTime();
+    html+=dueQuests.map(q=>{
+      const goalMs=new Date(q.dueDate+'T00:00:00').getTime();
+      const diff=Math.round((goalMs-todayMs)/86400000);
+      let countdown='';
+      if(diff===0)countdown=`<span style="color:#fb923c;font-size:11px;font-weight:700">Өнөөдөр!</span>`;
+      else if(diff>0)countdown=`<span style="color:#60a5fa;font-size:11px;font-weight:600">${diff} өдөр үлдсэн</span>`;
+      else countdown=`<span style="color:#f87171;font-size:11px">${Math.abs(diff)} өдөр өнгөрсөн</span>`;
+      return`<div class="item" style="flex-wrap:wrap;gap:4px">
+        <div class="circle" style="width:18px;height:18px;font-size:9px;flex-shrink:0;border-color:#3b82f6"></div>
+        <div class="iinfo">
+          <div class="ititle" style="font-size:13px">${esc(q.title)}</div>
+          <div class="imeta" style="margin-top:3px">
+            <span class="tag txp">+${q.xp} XP</span>
+            <span class="tag t${q.cat}">${catLabel(q.cat)}</span>
+            ${countdown}
+          </div>
+        </div>
+        <button style="background:none;border:1px solid rgba(255,255,255,.15);color:var(--t2);border-radius:6px;font-size:11px;padding:2px 7px;cursor:pointer" onclick="unsetQDate('${q.id}')">✕ Цуцлах</button>
+      </div>`;
+    }).join('');
+  }
+  if(quests.length){html+=`<div class="cal-section-title">⚔️ Дуусгасан даалгавар</div>`;html+=quests.map(q=>`<div class="item"><div class="circle done" style="width:18px;height:18px;font-size:9px;flex-shrink:0">✓</div><div class="iinfo"><div class="ititle done" style="font-size:13px">${esc(q.title)}</div></div></div>`).join('');}
   if(habits.length){html+=`<div class="cal-section-title">🔁 Зуршил</div>`;html+=habits.map(h=>`<div class="item"><div class="sq done" style="width:18px;height:18px;font-size:10px;flex-shrink:0">✓</div><div class="iinfo"><div class="ititle" style="font-size:13px">${esc(h.title)}</div></div></div>`).join('');}
   if(sessions.length){html+=`<div class="cal-section-title">⏱ Цаг</div>`;html+=sessions.map(s=>`<div class="sitem"><div class="sico" style="font-size:15px">${catIcon(s.cat)}</div><div class="sinfo"><div class="stitle">${esc(s.title)}</div><div class="smeta"><span class="sdur">${fmtSecs(s.secs??s.mins*60)}</span><span>${catLabel(s.cat)}</span></div></div></div>`).join('');}
   document.getElementById('calDetailContent').innerHTML=html;
@@ -1945,10 +2157,37 @@ function render(){
   document.getElementById('txptext').textContent=`∑ ${p.totalXp} XP`;
   document.getElementById('xpfill').style.width=pr.pct+'%';
   fillCatSelects();
-  renderMQ();renderStreak();renderQuests();renderHabits();renderSkills();
+  renderMQ();renderStreak();renderQuests();
   renderAchs();renderCustomAchs();renderStats();renderPinned();
-  applyTimerUI();renderTodayTime();renderSessions();
-  updateFriendReqBadge();
+  applyTimerUI();renderSessions();
+  updateFriendReqBadge();renderUpcoming();renderDailyTab();
+}
+function renderUpcoming(){
+  const todayMs=new Date(today()+'T00:00:00').getTime();
+  const items=[
+    ...(D.player.mainQuests||[]).filter(g=>!g.done&&g.date).map(g=>({date:g.date,label:g.text,type:'goal'})),
+    ...(D.quests||[]).filter(q=>!q.done&&q.dueDate).map(q=>({date:q.dueDate,label:q.title,type:'quest',xp:q.xp}))
+  ].map(x=>({...x,diff:Math.round((new Date(x.date+'T00:00:00').getTime()-todayMs)/86400000)}))
+   .sort((a,b)=>a.diff-b.diff).slice(0,5);
+  const el=document.getElementById('upcomingWidget');if(!el)return;
+  if(!items.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=`<div style="font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">⏳ Ирэх зорилгууд</div>`+
+  items.map(x=>{
+    let cdText,cdColor;
+    if(x.diff<0){cdText=`${Math.abs(x.diff)}өдөр хэтэрсэн`;cdColor='#f87171';}
+    else if(x.diff===0){cdText='Өнөөдөр!';cdColor='#fb923c';}
+    else if(x.diff===1){cdText='Маргааш';cdColor='var(--gold)';}
+    else{cdText=`${x.diff} өдөр`;cdColor='var(--t2)';}
+    const dot=x.type==='goal'
+      ?`<div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0"></div>`
+      :`<div style="width:7px;height:7px;border-radius:50%;background:#3b82f6;flex-shrink:0"></div>`;
+    return`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+      ${dot}
+      <div style="flex:1;font-size:12px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.label)}</div>
+      <div style="font-size:11px;color:${cdColor};white-space:nowrap;flex-shrink:0">${cdText}</div>
+    </div>`;
+  }).join('');
 }
 function renderMQ(){
   const goals=D.player.mainQuests||[];
@@ -1984,7 +2223,7 @@ function toggleMQ(id){
   const g=(D.player.mainQuests||[]).find(g=>g.id===id);if(!g)return;
   g.done=!g.done;
   if(g.mmGoalId){const mg=(D.mindMap.goals||[]).find(m=>m.id===g.mmGoalId);if(mg)mg.done=g.done;}
-  save();renderMQ();
+  save();renderMQ();renderDailyTab();
   if(document.getElementById('tab-mindmap')?.classList.contains('on'))renderMindMap();
 }
 function delMQ(id){
@@ -1993,11 +2232,19 @@ function delMQ(id){
 }
 function setMQDate(id,date){
   const g=(D.player.mainQuests||[]).find(x=>x.id===id);if(!g)return;
-  g.date=date;save();renderCalendar();if(curCalDate)calClick(curCalDate);
+  g.date=date;save();renderCalendar();renderUpcoming();if(curCalDate)calClick(curCalDate);
 }
 function unsetMQDate(id){
   const g=(D.player.mainQuests||[]).find(x=>x.id===id);if(!g)return;
-  g.date=null;save();renderCalendar();if(curCalDate)calClick(curCalDate);
+  g.date=null;save();renderCalendar();renderUpcoming();if(curCalDate)calClick(curCalDate);
+}
+function setQDate(id,date){
+  const q=D.quests.find(x=>x.id===id);if(!q)return;
+  q.dueDate=date;save();renderCalendar();renderUpcoming();renderQuests();if(curCalDate)calClick(curCalDate);
+}
+function unsetQDate(id){
+  const q=D.quests.find(x=>x.id===id);if(!q)return;
+  q.dueDate=null;save();renderCalendar();renderUpcoming();renderQuests();if(curCalDate)calClick(curCalDate);
 }
 function renderQuests(){
   const el=document.getElementById('qlist');
@@ -2013,6 +2260,7 @@ function renderQuests(){
           <span class="tag txp">+${q.xp} XP</span>
           <span class="tag t${q.cat}">${catLabel(q.cat)}</span>
           ${q.ca?`<span class="tag" style="background:rgba(139,148,158,.08);color:var(--t2)">${q.ca}</span>`:''}
+          ${q.dueDate?`<span class="tag" style="background:rgba(59,130,246,.12);color:#60a5fa">📅 ${q.dueDate}</span>`:''}
         </div>
       </div>
       <button class="pin-btn${pinned?' on':''}" onclick="togglePin('${q.id}')" title="Нүүр хуудсанд тогших">📌</button>
@@ -2021,6 +2269,7 @@ function renderQuests(){
       <div class="q-edit-row" id="qedit-${q.id}" style="display:none;width:100%;padding:8px 0 2px;gap:6px;flex-wrap:wrap">
         <select class="f" id="qecat-${q.id}" style="flex:1;min-width:120px;font-size:12px;padding:5px 8px">${catOpts}</select>
         <input type="number" class="f w80" id="qexp-${q.id}" value="${q.xp}" min="1" max="9999" placeholder="XP" style="font-size:12px;padding:5px 8px">
+        <input type="date" class="f" id="qedue-${q.id}" value="${q.dueDate||''}" style="font-size:12px;padding:5px 8px;flex:1;min-width:130px">
         <button class="btn gold" style="font-size:12px;padding:5px 14px" onclick="saveQEdit('${q.id}')">Хадгалах</button>
       </div>
     </div>`}).join('');
@@ -2040,12 +2289,114 @@ function saveQEdit(id){
   const q=D.quests.find(x=>x.id===id);if(!q)return;
   const sel=document.getElementById('qecat-'+id);
   const xpEl=document.getElementById('qexp-'+id);
+  const dueEl=document.getElementById('qedue-'+id);
   if(sel)q.cat=sel.value;
   if(xpEl)q.xp=Math.min(9999,Math.max(1,parseInt(xpEl.value)||50));
-  save();renderQuests();
+  if(dueEl)q.dueDate=dueEl.value||null;
+  save();renderQuests();renderCalendar();renderUpcoming();if(curCalDate)calClick(curCalDate);
+}
+function renderDailyTab(){
+  const el=document.getElementById('dailyKanban');if(!el)return;
+  const goals=D.player.mainQuests||[];
+  if(!goals.length){
+    el.innerHTML='<div class="empty" style="padding:24px">Гол зорилго байхгүй байна. Нүүр хуудасаас нэмнэ үү.</div>';
+    return;
+  }
+  const td=today();
+  el.innerHTML=goals.map(g=>{
+    const habits=(D.habits||[]).filter(h=>h.mqId===g.id);
+    const habitsHtml=habits.length?habits.map(h=>{
+      const done=habitDoneToday(h.id),sk=habitStreak(h.id);
+      const pk=`${td}_${h.id}`,prog=(D.habitProgress||{})[pk]||0;
+      let leftHtml='',rightHtml='';
+      if(h.type==='count'){
+        const pct=h.target>0?Math.min(100,prog/h.target*100):0;
+        leftHtml=`<div style="font-size:11px;color:var(--emerald);margin-top:2px">${prog}/${h.target||'?'} <span style="color:var(--t2)">удаа</span></div>
+          <div style="background:rgba(255,255,255,.08);border-radius:2px;height:3px;margin-top:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--emerald);border-radius:2px"></div></div>`;
+        rightHtml=done?'':`<button onclick="logHabitProgress('${h.id}',1)" style="background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.3);color:var(--emerald);border-radius:6px;font-size:11px;padding:1px 7px;cursor:pointer;white-space:nowrap">+1</button>`;
+      } else if(h.type==='time'){
+        const pct=h.target>0?Math.min(100,prog/h.target*100):0;
+        leftHtml=`<div style="font-size:11px;color:#60a5fa;margin-top:2px">${prog}/${h.target||'?'} <span style="color:var(--t2)">мин</span></div>
+          <div style="background:rgba(255,255,255,.08);border-radius:2px;height:3px;margin-top:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#60a5fa;border-radius:2px"></div></div>`;
+        rightHtml=done?'':`<button onclick="logHabitProgress('${h.id}',5)" style="background:rgba(96,165,250,.15);border:1px solid rgba(96,165,250,.3);color:#60a5fa;border-radius:6px;font-size:11px;padding:1px 7px;cursor:pointer;white-space:nowrap">+5мин</button>`;
+      }
+      return`<div style="padding:5px 2px;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="sq${done?' done':''}" onclick="toggleH('${h.id}')" style="width:18px;height:18px;font-size:9px;flex-shrink:0;cursor:pointer">${done?'✓':''}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;color:${done?'var(--t2)':'var(--t1)'};${done?'text-decoration:line-through;opacity:.6':''};">${esc(h.title)}</div>
+            <div style="display:flex;gap:5px;margin-top:2px;align-items:center">
+              <span class="tag txp" style="font-size:10px;padding:1px 5px;cursor:pointer" title="Дарж XP солих" onclick="editHabitXp('${h.id}',this)">+${h.xp}XP</span>
+              ${sk>0?`<span class="streak" style="font-size:10px">🔥${sk}</span>`:''}
+            </div>
+            ${leftHtml}
+          </div>
+          ${rightHtml}
+          <button onclick="delH('${h.id}')" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:11px;opacity:.35;padding:0 2px">✕</button>
+        </div>
+      </div>`;
+    }).join(''):'<div style="font-size:11px;color:rgba(255,255,255,.2);padding:4px 0;font-style:italic">Зуршил байхгүй</div>';
+    return`<div class="daily-col">
+      <div class="daily-col-hdr">
+        <div class="circle${g.done?' done':''}" onclick="toggleMQ('${g.id}')" style="width:18px;height:18px;font-size:9px;flex-shrink:0;cursor:pointer">${g.done?'✓':''}</div>
+        <div class="daily-col-title${g.done?' done':''}" title="${esc(g.text)}">${esc(g.text)}</div>
+      </div>
+      <div>${habitsHtml}</div>
+      <div class="daily-col-add" style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
+        <input type="text" id="hfast-${g.id}" class="f" placeholder="Зуршил нэмэх..." style="font-size:12px;padding:6px 10px" onkeydown="if(event.key==='Enter')addHabitFull('${g.id}')">
+        <div style="display:flex;gap:5px;align-items:center">
+          <select id="htype-${g.id}" onchange="onHabitTypeChange('${g.id}')" style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--t1);font-size:11px;padding:4px 6px;outline:none">
+            <option value="toggle">✓ Хийх</option>
+            <option value="time">⏱ Цагаар</option>
+            <option value="count">🔢 Тоогоор</option>
+          </select>
+          <input type="number" id="htarget-${g.id}" min="1" placeholder="Хэмжээ" style="display:none;width:70px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--t1);font-size:11px;padding:4px 6px;outline:none">
+          <button onclick="addHabitFull('${g.id}')" style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.25);color:var(--gold);border-radius:7px;font-size:11px;padding:4px 10px;cursor:pointer;white-space:nowrap">+ Нэмэх</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function editHabitXp(id,el){
+  const h=D.habits.find(x=>x.id===id);if(!h)return;
+  const inp=document.createElement('input');
+  inp.type='number';inp.value=h.xp;inp.min=1;inp.max=9999;
+  inp.style.cssText='width:52px;background:var(--bg2);border:1px solid var(--gold);border-radius:4px;color:var(--gold);font-size:11px;padding:1px 4px;text-align:center;outline:none';
+  el.replaceWith(inp);inp.focus();inp.select();
+  const commit=()=>{h.xp=Math.min(9999,Math.max(1,parseInt(inp.value)||h.xp));save();renderDailyTab();};
+  inp.onblur=commit;
+  inp.onkeydown=e=>{if(e.key==='Enter')commit();if(e.key==='Escape')renderDailyTab();};
+}
+function onHabitTypeChange(goalId){
+  const sel=document.getElementById('htype-'+goalId);
+  const tgt=document.getElementById('htarget-'+goalId);
+  if(!sel||!tgt)return;
+  const show=sel.value!=='toggle';
+  tgt.style.display=show?'block':'none';
+  tgt.placeholder=sel.value==='time'?'Минут':'Тоо';
+}
+function addHabitFull(goalId){
+  const nameInp=document.getElementById('hfast-'+goalId);
+  const title=nameInp?.value.trim();if(!title)return;
+  const type=document.getElementById('htype-'+goalId)?.value||'toggle';
+  const target=parseInt(document.getElementById('htarget-'+goalId)?.value)||0;
+  const defCat=(D.cats&&D.cats[0])?D.cats[0].id:'mind';
+  D.habits.push({id:'h'+Date.now(),title,cat:defCat,xp:20,type,target,mins:type==='time'?target:0,mqId:goalId||null});
+  nameInp.value='';save();renderDailyTab();checkAch();
+}
+function logHabitProgress(id,amount){
+  const h=D.habits.find(x=>x.id===id);if(!h||habitDoneToday(id))return;
+  if(!D.habitProgress)D.habitProgress={};
+  const pk=`${today()}_${id}`;
+  D.habitProgress[pk]=(D.habitProgress[pk]||0)+amount;
+  if(h.target>0&&D.habitProgress[pk]>=h.target){
+    toggleH(id);
+  } else {
+    save();renderDailyTab();
+  }
 }
 function renderHabits(){
-  const el=document.getElementById('hlist');
+  const el=document.getElementById('hlist');if(!el)return;
   if(!D.habits.length){el.innerHTML='<div class="empty">Зуршил байхгүй. + товч дарна уу.</div>';return}
   el.innerHTML=D.habits.map(h=>{
     const done=habitDoneToday(h.id),sk=habitStreak(h.id);
@@ -2063,128 +2414,83 @@ function renderHabits(){
       <button class="delbtn" onclick="delH('${h.id}')">✕</button>
     </div>`}).join('');
 }
-const SKX=200;
-const SKILL_COLORS=['#a855f7','#f87171','#3b82f6','#10b981','#f59e0b','#ec4899','#14b8a6','#8b5cf6','#f97316','#06b6d4'];
 function renderSkills(){
   const el=document.getElementById('skillTreeEl');if(!el)return;
-  const cats=D.cats||[];
-  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+  const SKX=200,cats=D.cats||[];
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
     <div class="ctitle">🌳 Чадварын мод</div>
-    <button class="btn gold" style="font-size:12px;padding:6px 14px" onclick="toggleSkillAddForm()">+ Чадвар нэмэх</button>
+    <button class="btn sm gold" onclick="toggleSkillForm()">+ Чадвар нэмэх</button>
   </div>
-  <div id="skillAddForm" style="display:none;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:18px">
-    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--gold)">✨ Шинэ чадвар нэмэх</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      <input class="f" id="skNewName" placeholder="Чадварын нэр (жш: 🎨 Бүтээлч)" style="flex:1;min-width:160px" onkeydown="if(event.key==='Enter')addTopSkill()">
-      <input type="color" id="skNewColor" value="#a855f7" style="width:44px;height:42px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;padding:3px">
-    </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="skColorPicks">
-      ${SKILL_COLORS.map(c=>`<div onclick="document.getElementById('skNewColor').value='${c}'" style="width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;border:2px solid transparent;transition:border-color .15s" onmouseover="this.style.borderColor='#fff'" onmouseout="this.style.borderColor='transparent'"></div>`).join('')}
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn gold" style="flex:1;font-size:13px;padding:9px" onclick="addTopSkill()">✓ Нэмэх</button>
-      <button class="btn" style="font-size:13px;padding:9px 14px" onclick="toggleSkillAddForm()">Болих</button>
+  <div id="skillAddForm" style="display:none;background:var(--bg2);border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid var(--border)">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <input type="text" id="newSkillName" class="f" placeholder="Чадварын нэр..." style="flex:1;min-width:140px;font-size:13px;padding:6px 10px">
+      <input type="color" id="newSkillColor" value="#a855f7" style="width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;padding:2px;background:none">
+      <button class="btn gold" onclick="addTopSkill()">Нэмэх</button>
     </div>
   </div>`;
-
-  if(!cats.length){html+='<div class="empty">Ангилал байхгүй байна.</div>';}
-  cats.forEach(cat=>{
-    const xp=D.skills[cat.id]||0;
-    const lv=Math.floor(xp/SKX)+1,pct=(xp%SKX)/SKX*100;
-    const nodes=(D.skillTree||[]).filter(n=>n.catId===cat.id);
-    const r=parseInt(cat.color.slice(1,3),16),g2=parseInt(cat.color.slice(3,5),16),b=parseInt(cat.color.slice(5,7),16);
-    const nodesHtml=nodes.length?`<div class="sk-children">${nodes.map(n=>{
-      const nx=n.xp||0,nl=Math.floor(nx/SKX)+1,np=(nx%SKX)/SKX*100;
-      return`<div class="sk-node">
-        <div class="sk-node-row">
-          <span class="sk-node-name">${esc(n.name)}</span>
-          <span class="sk-node-lv">Lv.${nl} · ${nx} XP</span>
-          <span class="sk-node-actions">
-            <button class="sk-node-btn" onclick="editSkNode('${n.id}')">✏️</button>
-            <button class="sk-node-btn" onclick="delSkNode('${n.id}')" style="color:#f87171">✕</button>
-          </span>
+  if(!cats.length){html+='<div class="empty">Чадвар байхгүй байна. + Чадвар нэмэх дарна уу.</div>';}
+  else html+=cats.map(cat=>{
+    const xp=D.skills[cat.id]||0,lv=Math.floor(xp/SKX)+1,pct=(xp%SKX)/SKX*100;
+    const subs=(D.skillTree||[]).filter(s=>s.catId===cat.id);
+    return`<div style="background:var(--bg2);border:1px solid ${cat.color}44;border-radius:12px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:11px;height:11px;border-radius:50%;background:${cat.color}"></div>
+          <span style="font-size:15px;font-weight:700;color:${cat.color}">${esc(cat.name)}</span>
+          <span style="font-size:12px;color:var(--t2)">Lv.${lv} · ${xp} XP</span>
         </div>
-        <div class="skbg" style="margin-bottom:8px"><div class="skfill" style="width:${np}%;background:${cat.color}"></div></div>
-        <button class="sk-prac-btn" onclick="practiceSkNode('${n.id}')">⚡ +10 XP</button>
-      </div>`;
-    }).join('')}</div>`:'';
-
-    const skAddId='skadd-'+cat.id;
-    html+=`<div class="sk" style="background:rgba(${r},${g2},${b},.05);border:1px solid rgba(${r},${g2},${b},.18);border-radius:14px;padding:14px 16px;margin-bottom:12px">
-      <div class="skrow">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="width:10px;height:10px;border-radius:50%;background:${cat.color};flex-shrink:0"></div>
-          <div class="skname">${catLabel(cat.id)}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="sklv">Lv.${lv} · ${xp} XP</div>
-          <button onclick="delTopSkill('${cat.id}')" style="background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;font-size:13px;padding:0 2px;line-height:1" title="Устгах">✕</button>
-        </div>
+        <button onclick="delTopSkill('${cat.id}')" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:13px;padding:2px 6px;opacity:.45" title="Устгах">✕</button>
       </div>
-      <div class="skbg" style="margin-bottom:12px"><div class="skfill" style="width:${pct}%;background:${cat.color}"></div></div>
-      ${nodesHtml}
-      <div class="sk-add-row" style="padding-left:0;margin-top:${nodes.length?'10px':'4px'}">
-        <input class="f" id="${skAddId}" placeholder="+ Дэд чадвар нэмэх..." style="flex:1;font-size:12px;padding:6px 10px;background:rgba(255,255,255,.06)" onkeydown="if(event.key==='Enter')addSkNode('${cat.id}')">
-        <button class="btn" style="font-size:12px;padding:6px 12px" onclick="addSkNode('${cat.id}')">Нэмэх</button>
+      <div style="background:var(--bg0);border-radius:3px;height:6px;margin-bottom:14px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:${cat.color};border-radius:3px;transition:width .5s"></div>
+      </div>
+      ${subs.map(s=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div style="flex:1;font-size:13px;color:var(--t1)">${esc(s.name)}</div>
+        <span style="font-size:11px;color:var(--t2);min-width:44px;text-align:right">${s.xp} XP</span>
+        <button onclick="practiceSkNode('${s.id}')" style="background:${cat.color}22;border:1px solid ${cat.color}55;color:${cat.color};border-radius:6px;font-size:11px;padding:2px 8px;cursor:pointer">+10</button>
+        <button onclick="delSkNode('${s.id}')" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:12px;opacity:.35;padding:0 3px">✕</button>
+      </div>`).join('')}
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <input type="text" id="sknode-${cat.id}" class="f" placeholder="Дэд чадвар нэмэх..." style="flex:1;font-size:12px;padding:5px 8px" onkeydown="if(event.key==='Enter')addSkNode('${cat.id}')">
+        <button onclick="addSkNode('${cat.id}')" class="btn sm" style="font-size:12px">+ Нэмэх</button>
       </div>
     </div>`;
-  });
+  }).join('');
   el.innerHTML=html;
 }
-function toggleSkillAddForm(){
+function toggleSkillForm(){
   const f=document.getElementById('skillAddForm');
-  if(!f)return;
-  const open=f.style.display==='block';
-  f.style.display=open?'none':'block';
-  if(!open)setTimeout(()=>document.getElementById('skNewName')?.focus(),50);
+  if(f)f.style.display=f.style.display==='none'?'block':'none';
 }
 function addTopSkill(){
-  const name=document.getElementById('skNewName')?.value.trim();
-  if(!name){return;}
-  const color=document.getElementById('skNewColor')?.value||'#a855f7';
-  const id='c'+Date.now();
+  const nameEl=document.getElementById('newSkillName'),colorEl=document.getElementById('newSkillColor');
+  const name=nameEl?.value.trim();if(!name)return;
+  const color=colorEl?.value||'#a855f7',id='sk'+Date.now();
   if(!D.cats)D.cats=[];
-  D.cats.push({id,name,color});
-  D.skills[id]=0;
-  document.getElementById('skNewName').value='';
-  document.getElementById('skillAddForm').style.display='none';
-  save();fillCatSelects();renderSkills();
+  D.cats.push({id,name,color});D.skills[id]=0;
+  save();renderSkills();fillCatSelects();
 }
 function delTopSkill(catId){
-  const cat=(D.cats||[]).find(c=>c.id===catId);
-  const xp=D.skills[catId]||0;
-  const nodes=(D.skillTree||[]).filter(n=>n.catId===catId);
-  if((xp>0||nodes.length>0)&&!confirm(`"${cat?.name}" чадварыг устгах уу? XP болон дэд чадварууд устагдана.`))return;
+  if(!confirm('Энэ чадварыг устгах уу?'))return;
   D.cats=(D.cats||[]).filter(c=>c.id!==catId);
   delete D.skills[catId];
-  D.skillTree=(D.skillTree||[]).filter(n=>n.catId!==catId);
-  save();fillCatSelects();renderSkills();
+  D.skillTree=(D.skillTree||[]).filter(s=>s.catId!==catId);
+  save();renderSkills();fillCatSelects();
 }
 function addSkNode(catId){
-  const inp=document.getElementById('skadd-'+catId);
+  const inp=document.getElementById('sknode-'+catId);
   const name=inp?.value.trim();if(!name)return;
   if(!D.skillTree)D.skillTree=[];
-  D.skillTree.push({id:'sk'+Date.now(),catId,name,xp:0});
+  D.skillTree.push({id:'sn'+Date.now(),catId,name,xp:0});
   inp.value='';save();renderSkills();
 }
-function delSkNode(id){
-  const n=(D.skillTree||[]).find(x=>x.id===id);
-  if(n&&n.xp>0&&!confirm('XP бүртгэлтэй чадварыг устгах уу?'))return;
-  D.skillTree=(D.skillTree||[]).filter(x=>x.id!==id);
-  save();renderSkills();
-}
-function editSkNode(id){
-  const n=(D.skillTree||[]).find(x=>x.id===id);if(!n)return;
-  const name=prompt('Чадварын нэр:',n.name);
-  if(name&&name.trim())n.name=name.trim();
-  save();renderSkills();
-}
 function practiceSkNode(id){
-  const n=(D.skillTree||[]).find(x=>x.id===id);if(!n)return;
-  n.xp=(n.xp||0)+10;
-  if(D.skills[n.catId]===undefined)D.skills[n.catId]=0;
-  D.skills[n.catId]+=10;
-  giveXp(10,n.catId);
+  const s=(D.skillTree||[]).find(x=>x.id===id);if(!s)return;
+  s.xp=(s.xp||0)+10;D.skills[s.catId]=(D.skills[s.catId]||0)+10;
+  save();renderSkills();render();
+}
+function delSkNode(id){
+  D.skillTree=(D.skillTree||[]).filter(s=>s.id!==id);
   save();renderSkills();
 }
 function renderAchs(){
@@ -2227,9 +2533,9 @@ function toggleH(id){
   const td=today();if(!D.streak[td])D.streak[td]=[];
   const idx=D.streak[td].indexOf(id);
   if(idx===-1){D.streak[td].push(id);D.stats.hDone++;toast(`+${h.xp} XP`,`"${h.title}" хийлээ!`);giveXp(h.xp,h.cat);checkAch();}
-  else{D.streak[td].splice(idx,1);save();renderHabits();renderTodayTime();renderStreak();}
+  else{D.streak[td].splice(idx,1);save();renderHabits();renderDailyTab();renderTodayTime();renderStreak();}
 }
-function delH(id){D.habits=D.habits.filter(x=>x.id!==id);save();renderHabits()}
+function delH(id){D.habits=D.habits.filter(x=>x.id!==id);save();renderHabits();renderDailyTab();}
 
 // ── NAME ──────────────────────────────────────────────────────────────────────
 function editName(){
@@ -2445,6 +2751,7 @@ function doResetSelected(){
   if(checks.includes('achs')){D.earned=[];D.customAchs=[];D.rewardLog=[];}
   if(checks.includes('calnotes')){D.calNotes={};}
   if(checks.includes('cats')){D.cats=[{id:'mind',name:'🧠 Оюун ухаан',color:'#a855f7'},{id:'body',name:'💪 Бие',color:'#f87171'},{id:'disc',name:'⏳ Сахилга',color:'#3b82f6'}];D.tasks=[];}
+  if(checks.includes('skills')){D.skillTree=[];D.skills={};(D.cats||[]).forEach(c=>{D.skills[c.id]=0;});}
   document.querySelectorAll('#resetCheckList input').forEach(c=>c.checked=false);
   const rp=document.getElementById('resetPanel');if(rp)rp.style.display='none';
   save();render();toast('✓',`${checks.length} зүйл цэвэрлэгдлээ`);
@@ -2505,10 +2812,236 @@ async function submitInvite(){
   }
 }
 
+// ── RESULTS TAB ───────────────────────────────────────────────────────────────
+function makeDonutArcs(slices,total,cx,cy,r,sw){
+  const C=2*Math.PI*r;let cum=0,html='';
+  html+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="${sw}"/>`;
+  slices.forEach(sl=>{
+    if(!sl.v||sl.v<=0)return;
+    const arc=(sl.v/total)*C,gap=C-arc,offset=-(cum/total)*C;
+    html+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${sl.color}" stroke-width="${sw}" stroke-dasharray="${arc.toFixed(2)} ${gap.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"/>`;
+    cum+=sl.v;
+  });
+  return html;
+}
+function calcDaily(date){
+  const xp=(D.xpLog||[]).filter(e=>e.d===date).reduce((s,e)=>s+e.a,0);
+  const quests=D.quests.filter(q=>q.done&&q.ca===date);
+  const habitIds=D.streak[date]||[];
+  const habits=habitIds.map(id=>D.habits.find(h=>h.id===id)).filter(Boolean);
+  const time={};
+  (D.sessions||[]).filter(s=>s.startDate===date).forEach(s=>{
+    const m=Math.floor((s.secs??s.mins*60)/60);if(m>0)time[s.cat]=(time[s.cat]||0)+m;
+  });
+  habitIds.forEach(id=>{const h=D.habits.find(x=>x.id===id);if(h&&h.mins)time[h.cat]=(time[h.cat]||0)+h.mins;});
+  const totalTime=Object.values(time).reduce((s,v)=>s+v,0);
+  return{xp,quests,habits,time,totalTime};
+}
+
+function renderResults(){
+  const td=today(),yd=prevDay(td);
+  const now=new Date();
+  const dayData=calcDaily(td);
+  const ydData=calcDaily(yd);
+
+  const dateEl=document.getElementById('resDailyDate');
+  if(dateEl){const[y,m,d]=td.split('-');dateEl.textContent=`${y}.${m}.${d}`;}
+
+  const kpiEl=document.getElementById('resDailyKpi');
+  if(kpiEl){
+    kpiEl.innerHTML=`
+      <div class="res-kpi"><div class="res-kpi-v" style="color:var(--gold)">${dayData.xp}</div><div class="res-kpi-l">XP авсан</div></div>
+      <div class="res-kpi"><div class="res-kpi-v" style="color:var(--emerald)">${dayData.quests.length}</div><div class="res-kpi-l">Даалгавар</div></div>
+      <div class="res-kpi"><div class="res-kpi-v" style="color:var(--purple)">${dayData.habits.length}</div><div class="res-kpi-l">Зуршил</div></div>`;
+  }
+
+  const chartsEl=document.getElementById('resDailyCharts');
+  if(chartsEl){
+    // 24h donut
+    const catSlices=Object.keys(dayData.time).filter(c=>dayData.time[c]>0)
+      .map(c=>({v:dayData.time[c],color:catColor(c),label:catLabel(c)}));
+    const trackedMins=dayData.totalTime;
+    const freeMins=Math.max(0,1440-trackedMins);
+    const donutArcs=makeDonutArcs(catSlices,1440,75,75,56,18);
+    const donutLegend=catSlices.length
+      ?catSlices.map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+          <div style="width:8px;height:8px;border-radius:50%;background:${s.color};flex-shrink:0"></div>
+          <span style="font-size:11px;color:var(--t1);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.label}</span>
+          <span style="font-size:10px;color:var(--t2);white-space:nowrap">${fmtTime(s.v)}</span>
+          <span style="font-size:10px;color:var(--t2);min-width:28px;text-align:right">${Math.round(s.v/1440*100)}%</span>
+        </div>`).join('')+
+        `<div style="display:flex;align-items:center;gap:6px;padding:2px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:3px">
+          <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1);flex-shrink:0"></div>
+          <span style="font-size:11px;color:var(--t2);flex:1">Бүртгэгдээгүй</span>
+          <span style="font-size:10px;color:var(--t2)">${fmtTime(freeMins)}</span>
+          <span style="font-size:10px;color:var(--t2);min-width:28px;text-align:right">${Math.round(freeMins/1440*100)}%</span>
+        </div>`
+      :`<div style="font-size:11px;color:var(--t2);font-style:italic;padding-top:4px">Цаг бүртгэгдээгүй</div>`;
+    // habit ring
+    const habitTotal=D.habits.length;
+    const habitDone=dayData.habits.length;
+    const habitPct=habitTotal>0?Math.round(habitDone/habitTotal*100):0;
+    const ringColor=habitPct>=100?'var(--gold)':habitPct>=50?'var(--emerald)':'var(--purple)';
+    const habitArcs=makeDonutArcs([{v:habitDone,color:ringColor}],Math.max(habitTotal,1),60,60,44,14);
+    const habitList=D.habits.length
+      ?D.habits.map(h=>{
+          const done=habitDoneToday(h.id);
+          const prog=D.habitProgress&&h.type!=='toggle'?D.habitProgress[`${td}_${h.id}`]||0:null;
+          let sub='';
+          if(prog!==null&&h.target>0&&!done)sub=`<span style="font-size:10px;color:var(--t2)">${prog}/${h.target}</span>`;
+          return`<div style="display:flex;align-items:center;gap:6px;padding:3px 0">
+            <div style="width:9px;height:9px;border-radius:50%;background:${done?ringColor:'rgba(255,255,255,.1)'};flex-shrink:0;${done?'':'border:1.5px solid rgba(255,255,255,.15)'}"></div>
+            <span style="font-size:12px;color:${done?'var(--t1)':'var(--t2)'};flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${done?'':'opacity:.65'}">${esc(h.title)}</span>
+            ${sub}
+          </div>`;
+        }).join('')
+      :`<div style="font-size:11px;color:var(--t2);font-style:italic;padding-top:4px">Зуршил нэмэгдээгүй</div>`;
+
+    chartsEl.innerHTML=`<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start">
+      <div style="flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;text-align:center">⏰ 24 цагийн хуваарилалт</div>
+        <div style="position:relative;display:flex;justify-content:center;margin-bottom:10px">
+          <svg width="150" height="150" viewBox="0 0 150 150" style="transform:rotate(-90deg)">${donutArcs}</svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;gap:1px">
+            <div style="font-size:18px;font-weight:800;color:var(--gold);line-height:1">${fmtTime(trackedMins)||'—'}</div>
+            <div style="font-size:9px;color:var(--t2)">бүртгэгдсэн</div>
+          </div>
+        </div>
+        ${donutLegend}
+      </div>
+      <div style="flex:1;min-width:150px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;text-align:center">🔁 Зуршилын гүйцэтгэл</div>
+        <div style="position:relative;display:flex;justify-content:center;margin-bottom:10px">
+          <svg width="120" height="120" viewBox="0 0 120 120" style="transform:rotate(-90deg)">${habitArcs}</svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;gap:1px">
+            <div style="font-size:26px;font-weight:900;color:${ringColor};line-height:1">${habitPct}%</div>
+            <div style="font-size:11px;color:var(--t2)">${habitDone}/${habitTotal}</div>
+          </div>
+        </div>
+        ${habitList}
+      </div>
+    </div>`;
+  }
+
+  const timeEl=document.getElementById('resDailyTime');
+  if(timeEl){
+    const cats=Object.keys(dayData.time).filter(c=>dayData.time[c]>0);
+    if(cats.length){
+      const mx=Math.max(...cats.map(c=>dayData.time[c]),1);
+      timeEl.innerHTML=`<div style="font-size:11px;color:var(--t2);margin-bottom:8px;font-weight:600">⏱ Цаг зарцуулалт</div>`
+        +cats.map(c=>`<div class="trow"><div class="trlabel">${catLabel(c)}</div><div class="trbg"><div class="trfill" style="width:${dayData.time[c]/mx*100}%;background:${catColor(c)}"></div></div><div class="trval">${fmtTime(dayData.time[c])}</div></div>`).join('')
+        +`<div class="total-row"><span style="color:var(--t2)">Нийт</span><span style="color:var(--gold);font-weight:700">${fmtTime(dayData.totalTime)}</span></div>`;
+    }else{
+      timeEl.innerHTML='<div style="font-size:12px;color:var(--t2);font-style:italic">Өнөөдөр цаг бүртгэгдээгүй</div>';
+    }
+  }
+
+  const cmpEl=document.getElementById('resDailyCmp');
+  if(cmpEl){
+    function diffTag(a,b){const d=a-b;if(d>0)return`<span class="res-cmp-diff" style="color:var(--emerald)">▲ +${d}</span>`;if(d<0)return`<span class="res-cmp-diff" style="color:#f87171">▼ ${d}</span>`;return`<span class="res-cmp-diff" style="color:var(--t2)">— 0</span>`;}
+    function timeDiffTag(a,b){const d=a-b;if(d>0)return`<span class="res-cmp-diff" style="color:var(--emerald)">▲ +${fmtTime(d)}</span>`;if(d<0)return`<span class="res-cmp-diff" style="color:#f87171">▼ -${fmtTime(Math.abs(d))}</span>`;return`<span class="res-cmp-diff" style="color:var(--t2)">— 0</span>`;}
+    cmpEl.innerHTML=`
+      <div style="font-size:11px;color:var(--t2);margin-bottom:8px;font-weight:600;display:flex;justify-content:space-between"><span>Өчигдөртэй харьцуулах</span><span style="opacity:.5">Өчигдөр → Өнөөдөр</span></div>
+      <div class="res-cmp"><span class="res-cmp-lbl">✨ XP</span><span class="res-cmp-yd">${ydData.xp}</span><span class="res-cmp-td">${dayData.xp}</span>${diffTag(dayData.xp,ydData.xp)}</div>
+      <div class="res-cmp"><span class="res-cmp-lbl">⚔️ Даалгавар</span><span class="res-cmp-yd">${ydData.quests.length}</span><span class="res-cmp-td">${dayData.quests.length}</span>${diffTag(dayData.quests.length,ydData.quests.length)}</div>
+      <div class="res-cmp"><span class="res-cmp-lbl">🔁 Зуршил</span><span class="res-cmp-yd">${ydData.habits.length}</span><span class="res-cmp-td">${dayData.habits.length}</span>${diffTag(dayData.habits.length,ydData.habits.length)}</div>
+      <div class="res-cmp"><span class="res-cmp-lbl">⏱ Цаг</span><span class="res-cmp-yd">${fmtTime(ydData.totalTime)||'—'}</span><span class="res-cmp-td">${fmtTime(dayData.totalTime)||'—'}</span>${timeDiffTag(dayData.totalTime,ydData.totalTime)}</div>`;
+  }
+
+  const doneEl=document.getElementById('resDailyDone');
+  if(doneEl){
+    const items=[];
+    dayData.quests.forEach(q=>items.push({ico:'⚔️',label:q.title,sub:`+${q.xp} XP`}));
+    dayData.habits.forEach(h=>items.push({ico:'✅',label:h.title,sub:`+${h.xp} XP`}));
+    (D.sessions||[]).filter(s=>s.startDate===td).forEach(s=>items.push({ico:catIcon(s.cat),label:s.title,sub:fmtSecs(s.secs??s.mins*60)}));
+    if(items.length){
+      doneEl.innerHTML=`<div style="font-size:11px;color:var(--t2);margin-bottom:8px;font-weight:600">✔ Өнөөдөр хийсэн зүйлс</div>`
+        +items.map(it=>`<div class="res-done-item"><span class="res-done-ico">${it.ico}</span><span style="flex:1">${esc(it.label)}</span><span style="font-size:11px;color:var(--gold)">${it.sub}</span></div>`).join('');
+    }else{
+      doneEl.innerHTML='<div style="font-size:12px;color:var(--t2);font-style:italic">Өнөөдөр бүртгэлтэй зүйл байхгүй байна</div>';
+    }
+  }
+
+  const my=now.getFullYear(),mm=now.getMonth()+1;
+  const mData=calcMonthly(my,mm);
+  const mLbl=document.getElementById('resMonthLabel');
+  if(mLbl)mLbl.textContent=`${MN_LBL[mm-1]} сар, ${my}`;
+
+  const mKpiEl=document.getElementById('resMonthKpi');
+  if(mKpiEl){
+    const totalTimeMon=Object.values(mData.time).reduce((s,v)=>s+v,0);
+    mKpiEl.innerHTML=`
+      <div class="res-kpi"><div class="res-kpi-v" style="color:var(--gold)">${mData.xp}</div><div class="res-kpi-l">Нийт XP</div></div>
+      <div class="res-kpi"><div class="res-kpi-v" style="color:var(--emerald)">${mData.quests}</div><div class="res-kpi-l">Даалгавар</div></div>
+      <div class="res-kpi"><div class="res-kpi-v" style="color:var(--purple)">${mData.habitsTotal}</div><div class="res-kpi-l">Зуршил</div></div>`;
+  }
+
+  const mTimeEl=document.getElementById('resMonthTime');
+  if(mTimeEl){
+    const cats=Object.keys(mData.time).filter(c=>mData.time[c]>0);
+    if(cats.length){
+      const mx=Math.max(...cats.map(c=>mData.time[c]),1);
+      const totalTimeMon=cats.reduce((s,c)=>s+mData.time[c],0);
+      mTimeEl.innerHTML=`<div style="font-size:11px;color:var(--t2);margin-bottom:8px;font-weight:600">⏱ Нийт цаг зарцуулалт</div>`
+        +cats.map(c=>`<div class="trow"><div class="trlabel">${catLabel(c)}</div><div class="trbg"><div class="trfill" style="width:${mData.time[c]/mx*100}%;background:${catColor(c)}"></div></div><div class="trval">${fmtTime(mData.time[c])}</div></div>`).join('')
+        +`<div class="total-row"><span style="color:var(--t2)">Нийт</span><span style="color:var(--gold);font-weight:700">${fmtTime(totalTimeMon)}</span></div>`;
+    }else{
+      mTimeEl.innerHTML='<div style="font-size:12px;color:var(--t2);font-style:italic">Энэ сард цаг бүртгэгдээгүй</div>';
+    }
+  }
+}
+
+// ── EXPORT / IMPORT ───────────────────────────────────────────────────────────
+function exportAccount(){
+  const u=getCurUser();if(!u)return;
+  const accts=getAccts();
+  const payload={lq_export:true,v:1,user:u,pin:accts[u]?.pin,data:D};
+  const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`life-quest-${u}.lq`;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('📤','Файл татагдлаа — нөгөө browser дээр импортлоорой!');
+}
+function importAccount(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const p=JSON.parse(e.target.result);
+      if(!p.lq_export||!p.user||!p.pin||!p.data){
+        document.getElementById('authErr').textContent='Файл буруу байна';return;
+      }
+      const accts=getAccts();
+      accts[p.user]={pin:p.pin};saveAccts(accts);
+      localStorage.setItem(dataKey(p.user),JSON.stringify(p.data));
+      localStorage.setItem('lq_rem',JSON.stringify({user:p.user,pin:p.pin}));
+      setCurUser(p.user);D=load();hideAuthScreen();render();
+      if(D.activeTimer)applyTimerUI();
+      toast('✅',`@${p.user} аккаунт амжилттай импортлогдлоо!`);
+    }catch(err){
+      document.getElementById('authErr').textContent='Файл уншиж чадсангүй';
+    }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (function(){
   const u=getCurUser();
-  if(u&&getAccts()[u]){D=load();hideAuthScreen();render();if(D.activeTimer)applyTimerUI();}
+  if(u&&getAccts()[u]){D=load();hideAuthScreen();render();if(D.activeTimer)applyTimerUI();return;}
+  // auto-login from remembered credentials
+  try{
+    const rem=JSON.parse(localStorage.getItem('lq_rem')||'null');
+    if(rem&&rem.user&&rem.pin){
+      const accts=getAccts();
+      if(accts[rem.user]&&accts[rem.user].pin===rem.pin){
+        setCurUser(rem.user);D=load();hideAuthScreen();render();if(D.activeTimer)applyTimerUI();return;
+      }
+    }
+  }catch{}
   // else auth screen stays visible
 })();
 </script>
